@@ -55,7 +55,7 @@ Iterable.prototype.last = function() {
 */
 Iterable.prototype.each = function(callback) {
    for (var i = 0, length = this.items.length; i < length; i++) {
-      this._invoke(callback, i);
+      this._invoke(callback, i, i);
    }
 };
 

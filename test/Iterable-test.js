@@ -23,6 +23,12 @@ var iterableTests = {
       var counter = 0;
       this.iterable.each(function(num) {counter++});
       equal(counter, 6);
+
+      var indices = [];
+      this.iterable.each(function(num, index) {
+         indices.push(index);
+      });
+      deepEqual(indices, [0, 1, 2, 3, 4, 5]);
    },
    
    map: function() {

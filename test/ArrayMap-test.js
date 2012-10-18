@@ -102,6 +102,12 @@ test('each', function() {
       ok(value);
    });
    equal(counter, 3);
+
+   var indices = [];
+   this.numberMap.each(function(key, value, index) {
+      indices.push(index);
+   });
+   deepEqual(indices, [0, 1, 2]);
 });
 
 test('map', function() {
