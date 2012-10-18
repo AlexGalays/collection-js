@@ -1,9 +1,10 @@
 
 module("List", {setup: function() {
-	this.iterable = List(1, 2, 3, 4, 5, 6);
+	this.iterable = this.seq = List(1, 2, 3, 4, 5, 6);
 }});
 
 runTests(iterableTests);
+runTests(sequenceTests);
 
 test("construction shorthand", function() {
 	var list = List(1, 2, 3);
@@ -154,22 +155,6 @@ test("removeAll", function() {
 	deepEqual(list.items, []);
 });
 
-test("indexOf", function() {
-	var list = List(1, 2, 3);
-	equal(list.indexOf(2), 1);
-	equal(list.indexOf(4), -1);
-	equal(list.indexOf(3, 1), 2);
-	equal(list.indexOf(2, 2), -1);
-});
-
-test("lastIndexOf", function() {
-	var list = List(1, 2, 2, 3, 1, 3, 1, 2, 1, 1, 3);
-	equal(list.lastIndexOf(1), 9);
-	equal(list.lastIndexOf(2), 7);
-	equal(list.lastIndexOf(3), 10);
-	equal(list.lastIndexOf(4), -1);
-});
-
 test("sort", function() {
 	var array = [2, 5, 6, 1, 3, 4];
 	array.sort();
@@ -199,12 +184,6 @@ test("contains", function() {
 	var list = List(1, 2, 3);
 	ok(list.contains(2));
 	ok(!list.contains(4));
-});
-
-test("distinct", function() {
-	var list = List(1, 2, 2, 3, 1, 4, 2, 3);
-	var distinct = list.distinct();
-	deepEqual(distinct.items, [1, 2, 3, 4]);
 });
 
 test("toSet", function() {

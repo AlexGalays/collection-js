@@ -1,6 +1,6 @@
 
 /*
-* Iterable is used internally to provide functional style methods to ordered collections.
+* Iterable is used internally to provide functional style methods to indexed collections.
 * The contract a collection must follow to inherit from Iterable is:
 * - Exposing a property named items, the Array representation of the collection.
 * - Either specify a fromArray method or override _createNew so that new collections 
@@ -8,17 +8,10 @@
 * 
 * None of the Iterable methods mutates the collection.
 *
-* Iterable can also act as a temporary Array wrapper so that an Array instance
-* can beneficiate from all Iterable methods, e.g var otherArray = Iterable(array).dropWhile(...);
-* This can be useful as a one-off when using a List over an Array is not justifiable.
-*
 * For any method accepting a callback or predicate as a parameter, you need to ensure
 * the value of 'this' inside the method is either bound or not used.
 */
-var Iterable = function(array) {
-   if (this instanceof Iterable) return;
-   return IterableArray(array);
-};
+var Iterable = function() {};
 
 /*
 * Returns the number of items in this collection. 
@@ -72,7 +65,7 @@ Iterable.prototype.map = function(callback) {
 
 /*
 * Builds a List of the extracted properties of this collection of objects.
-* This is a specialized case of map(). The property can be arbitrarily nested.
+* This is a special case of map(). The property can be arbitrarily nested.
 */
 Iterable.prototype.extractProperty = function(property) {
    var propertyChain = property.split('.');
@@ -94,16 +87,6 @@ Iterable.prototype.filter = function(predicate) {
       if (this._invoke(predicate, i)) result.push(this.items[i]);
    }
    return this._createNew(result);
-};
-
-/*
-* Tests whether this collection contains a given item.
-*/
-Iterable.prototype.contains = function(item) {
-   for (var i = 0, length = this.items.length; i < length; i++) {
-      if (this.items[i] === item) return true;
-   }
-   return false;
 };
 
 /*
@@ -259,19 +242,6 @@ Iterable.prototype.takeWhile = function(predicate) {
 };
 
 /*
-* Checks if the other iterable collection contains 
-* the same items in the same order as this collection.
-*/
-Iterable.prototype.sameItems = function(otherIterable) {
-   if (this.size() != otherIterable.size()) return false;
-
-   for (var i = 0, length = this.items.length; i < length; i++) {
-      if (this.items[i] !== otherIterable.items[i]) return false;
-   } 
-   return true;
-};
-
-/*
 * Returns a new collection with the items in reversed order.
 */
 Iterable.prototype.reverse = function() {
@@ -363,20 +333,6 @@ var getNestedProperty = function(item, propertyChain) {
      i++;
    }
    return currentContext;
-};
-
-/*
-* IterableArray is used internally to wrap and augment 
-* an Array instance with the Iterable methods. 
-*/
-var IterableArray = createType('IterableArray', Iterable);
-
-IterableArray.prototype._init = function(items) {
-   this.items = items;
-};
-
-IterableArray.fromArray = function(array) {
-   return array;
 };
 
 

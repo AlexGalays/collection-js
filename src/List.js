@@ -1,10 +1,10 @@
 
 /*
 * An ordered collection backed by an Array.
-* List inherits from all the Iterable methods.
+* List has access to all Sequence and Iterable methods.
 * List can be seen as a richer Array.
 */
-var List = createType('List', Iterable);
+var List = createType('List', Sequence);
 
 List.fromArray = function(array) {
 	return List.apply(null, array);
@@ -126,45 +126,6 @@ List.prototype.removeIf = function(predicate) {
 		}
 	}
 	return List.fromArray(removed);
-};
-
-/*
-* Returns the index of the first occurence of item in this list or -1 if none exists.
-*/
-List.prototype.indexOf = function(item, startingIndex) {
-	startingIndex = startingIndex || 0;
-   for (var i = startingIndex, length = this.items.length; i < length; i++) {
-   	if (this.items[i] === item) return i;
-   }
-	return -1;
-};
-
-/*
-* Returns the index of the last occurence of item in this list or -1 if none exists.
-*/
-List.prototype.lastIndexOf = function(item) {
-   for (var i = this.items.length - 1; i >= 0 ; i--) {
-   	if (this.items[i] === item) return i;
-   }
-	return -1;
-};
-
-/*
-* Tests whether this list contains the specified item.
-*/
-List.prototype.contains = function(item) {
-	return this.indexOf(item) != -1;
-};
-
-/*
-* Builds a new List without any duplicate items.
-*/
-List.prototype.distinct = function() {
-	var distinctItems = Set();
-	for (var i = 0, length = this.items.length; i < length; i++) {
-		distinctItems.add(this.items[i]);
-	}
-	return distinctItems.toList();
 };
 
 /*

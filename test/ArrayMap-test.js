@@ -153,14 +153,6 @@ test('partition', function() {
    equalEntryArray(partitions[1].items, [[1, 10]]);
 });
 
-test('contains', function() {
-   ok(this.numberMap.contains(1));
-   ok(this.numberMap.contains(3));
-   ok(!this.numberMap.contains(30));
-   ok(!this.numberMap.contains(null));
-   ok(!this.numberMap.contains(undefined));
-});
-
 test('count', function() {
    equal(2, this.numberMap.count(function(key, value) {return value < 30}));
 });
@@ -249,22 +241,6 @@ test('takeWhile', function() {
       return value < 30;
    });
    equalEntryArray(result.items, [[1, 10], [2, 20]]);
-});
-
-test('sameItems', function() {
-   var sameMap = ArrayMap(
-      1, 10,
-      2, 20,
-      3, 30
-   );
-   var differentMap = ArrayMap(
-      1, 10,
-      2, 20,
-      3, 333
-   );
-
-   ok(this.numberMap.sameItems(sameMap));
-   ok(!this.numberMap.sameItems(differentMap));
 });
 
 test('reverse', function() {

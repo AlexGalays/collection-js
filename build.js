@@ -33,6 +33,7 @@ concatFiles({
       'src/start.js',
       'src/util.js',
       'src/Iterable.js',
+      'src/Sequence.js',
       'src/List.js',
       'src/Map.js',
       'src/Set.js',

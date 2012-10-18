@@ -1,5 +1,4 @@
 
-// List-like iterable tests; Iterable applied to a Map is tested in ArrayMap-test
 var iterableTests = {
    size: function() {
       equal(this.iterable.size(), 6);
@@ -71,13 +70,6 @@ var iterableTests = {
       });
       deepEqual(partitions[0].items, [2, 4, 6]);
       deepEqual(partitions[1].items, [1, 3, 5]);
-   },
-
-   contains: function() {
-      ok(this.iterable.contains(1));
-      ok(this.iterable.contains(4));
-      ok(!this.iterable.contains('4'));
-      ok(!this.iterable.contains(7)); 
    },
 
    count: function() {
@@ -165,11 +157,6 @@ var iterableTests = {
       deepEqual(result.items, [1, 2, 3]);
    },
 
-   sameItems: function() {
-      ok(!this.iterable.sameItems(Iterable([1, 2, 4, 3, 5, 6])));
-      ok(this.iterable.sameItems(Iterable([1, 2, 3, 4, 5, 6])));
-   },
-
    reverse: function() {
       var reversed = this.iterable.reverse();
       deepEqual(reversed.items, [6, 5, 4, 3, 2, 1]);
@@ -205,39 +192,18 @@ var iterableTests = {
 
 module("Iterable - simple iterable", {
    setup: function() {
-      var ArrayWrapper = function(items) {
+      var SimpleIterable = function(items) {
          this.items = items;
       };
 
-      ArrayWrapper.prototype = new Iterable();
+      SimpleIterable.prototype = new Iterable();
 
-      ArrayWrapper.prototype._createNew = function(array) {
-         return new ArrayWrapper(array);
+      SimpleIterable.prototype._createNew = function(array) {
+         return new SimpleIterable(array);
       };
 
-      this.iterable = new ArrayWrapper([1, 2, 3, 4, 5, 6]);
+      this.iterable = new SimpleIterable([1, 2, 3, 4, 5, 6]);
    }
 });
 
 runTests(iterableTests);
-
-
-module("Iterable - wrapped array", {
-   setup: function() {
-      this.array = [1, 2, 3, 4, 5, 6];
-      this.iterable = Iterable(this.array);
-   }
-});
-
-/* Can't run the full test suite as wrapping an Array creates an iterable 
-that produce Arrays, not iterables. So just test the methods were attached. */
-test("size", function() {
-   equal(6, this.iterable.size());
-});
-
-test("filter", function() {
-   var filtered = this.iterable.filter(function(num) {
-      return (num > 2);
-   });
-   deepEqual(filtered, [3, 4, 5, 6]);
-});

@@ -1,6 +1,7 @@
 
 getId = Collection.getId;
 Iterable = Collection.Iterable;
+Sequence = Seq = Collection.Sequence;
 List = Collection.List;
 Map = Collection.Map;
 Set = Collection.Set;

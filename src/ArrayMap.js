@@ -118,7 +118,7 @@ ArrayMap.prototype.containsValue = function(value) {
 * as it's faster.
 */
 ArrayMap.prototype.keys = function() {
-   var keys = Iterable(this.items).map(function(entry) {
+   var keys = Seq(this.items).map(function(entry) {
       return entry.key;
    });
    return List.fromArray(keys);
@@ -130,7 +130,7 @@ ArrayMap.prototype.keys = function() {
 * as it's faster.
 */
 ArrayMap.prototype.values = function() {
-   var values = Iterable(this.items).map(function(entry) {
+   var values = Seq(this.items).map(function(entry) {
       return entry.value;
    });
    return List.fromArray(values);
@@ -178,18 +178,7 @@ ArrayMap.prototype._setMeta = function(entry) {
 };
 
 // Iterable overrides
-
-ArrayMap.prototype.contains = ArrayMap.prototype.containsKey;
-      
-ArrayMap.prototype.sameItems = function(otherIterable) {
-   if (this.size() != otherIterable.size()) return false;
-
-   for (var i = 0, length = this.items.length; i < length; i++) {
-      if (!this.items[i].equals(otherIterable.items[i])) return false;
-   }
-   return true;
-};
-
+  
 ArrayMap.prototype._invoke = function(func, forIndex, extraParam) {
    var entry = this.items[forIndex];
    return func(entry.key, entry.value, extraParam);
