@@ -96,7 +96,7 @@ var initPairs = function(map, pairs) {
 };
 
 /*
-* Iterable is used internally to provide functional style methods to ordered collections.
+* Iterable is used internally to provide functional style methods to indexed collections.
 * The contract a collection must follow to inherit from Iterable is:
 * - Exposing a property named items, the Array representation of the collection.
 * - Either specify a fromArray method or override _createNew so that new collections 
@@ -104,17 +104,10 @@ var initPairs = function(map, pairs) {
 * 
 * None of the Iterable methods mutates the collection.
 *
-* Iterable can also act as a temporary Array wrapper so that an Array instance
-* can beneficiate from all Iterable methods, e.g var otherArray = Iterable(array).dropWhile(...);
-* This can be useful as a one-off when using a List over an Array is not justifiable.
-*
 * For any method accepting a callback or predicate as a parameter, you need to ensure
 * the value of 'this' inside the method is either bound or not used.
 */
-var Iterable = function(array) {
-   if (this instanceof Iterable) return;
-   return IterableArray(array);
-};
+var Iterable = function() {};
 
 /*
 * Returns the number of items in this collection. 
@@ -151,7 +144,7 @@ Iterable.prototype.last = function() {
 */
 Iterable.prototype.each = function(callback) {
    for (var i = 0, length = this.items.length; i < length; i++) {
-      this._invoke(callback, i);
+      this._invoke(callback, i, i);
    }
 };
 
@@ -168,7 +161,7 @@ Iterable.prototype.map = function(callback) {
 
 /*
 * Builds a List of the extracted properties of this collection of objects.
-* This is a specialized case of map(). The property can be arbitrarily nested.
+* This is a special case of map(). The property can be arbitrarily nested.
 */
 Iterable.prototype.extractProperty = function(property) {
    var propertyChain = property.split('.');
@@ -190,16 +183,6 @@ Iterable.prototype.filter = function(predicate) {
       if (this._invoke(predicate, i)) result.push(this.items[i]);
    }
    return this._createNew(result);
-};
-
-/*
-* Tests whether this collection contains a given item.
-*/
-Iterable.prototype.contains = function(item) {
-   for (var i = 0, length = this.items.length; i < length; i++) {
-      if (this.items[i] === item) return true;
-   }
-   return false;
 };
 
 /*
@@ -355,19 +338,6 @@ Iterable.prototype.takeWhile = function(predicate) {
 };
 
 /*
-* Checks if the other iterable collection contains 
-* the same items in the same order as this collection.
-*/
-Iterable.prototype.sameItems = function(otherIterable) {
-   if (this.size() != otherIterable.size()) return false;
-
-   for (var i = 0, length = this.items.length; i < length; i++) {
-      if (this.items[i] !== otherIterable.items[i]) return false;
-   } 
-   return true;
-};
-
-/*
 * Returns a new collection with the items in reversed order.
 */
 Iterable.prototype.reverse = function() {
@@ -461,29 +431,132 @@ var getNestedProperty = function(item, propertyChain) {
    return currentContext;
 };
 
-/*
-* IterableArray is used internally to wrap and augment 
-* an Array instance with the Iterable methods. 
-*/
-var IterableArray = createType('IterableArray', Iterable);
-
-IterableArray.prototype._init = function(items) {
-   this.items = items;
-};
-
-IterableArray.fromArray = function(array) {
-   return array;
-};
-
 
 Collection.Iterable = Iterable;   
 
 /*
+* Sequence is used internally to provide further methods to iterables
+* that are also genuine flat sequences, i.e all iterables but maps.
+*
+* None of the Sequence methods mutates the collection.
+*
+* Sequence can also act as a temporary Array wrapper so that an Array instance
+* can beneficiate from all Sequence methods, e.g var otherArray = Seq(array).dropWhile(...);
+* This can be useful as a one-off when using a List over an Array is not justifiable.
+*/
+var Sequence = function(array) {
+   if (this instanceof Sequence) return;
+   return ArraySeq(array);
+};
+
+Sequence.prototype = new Iterable();
+
+/*
+* Tests whether this sequence contains a given item.
+*/
+Sequence.prototype.contains = function(item) {
+   for (var i = 0, length = this.items.length; i < length; i++) {
+      if (this.items[i] === item) return true;
+   }
+   return false;
+};
+
+/*
+* Builds a new sequence without any duplicate item.
+*/
+Sequence.prototype.distinct = function() {
+   var set = Set(), result = [];
+   for (var i = 0, length = this.items.length; i < length; i++) {
+      var item = this.items[i];
+      if (!set.add(item)) continue;
+      result.push(item);
+   }
+   return this._createNew(result);
+};
+
+/*
+* Converts this sequence of collections
+* into a sequence formed by the items of these collections.
+*/
+Sequence.prototype.flatten = function() {
+   var result = [], item;
+   for (var i = 0, length = this.items.length; i < length; i++) {
+      item = this.items[i];
+      var seq = asSequence(item);
+      if (seq) result.push.apply(result, seq.items);
+      else result.push(item);
+   }
+   return this._createNew(result);
+};
+
+/*
+* Returns the index of the first occurence of item 
+* in this sequence or -1 if none exists.
+*/
+Sequence.prototype.indexOf = function(item, startingIndex) {
+   startingIndex = startingIndex || 0;
+   for (var i = startingIndex, length = this.items.length; i < length; i++) {
+      if (this.items[i] === item) return i;
+   }
+   return -1;
+};
+
+/*
+* Returns the index of the last occurence of item 
+* in this sequence or -1 if none exists.
+*/
+Sequence.prototype.lastIndexOf = function(item) {
+   for (var i = this.items.length - 1; i >= 0 ; i--) {
+      if (this.items[i] === item) return i;
+   }
+   return -1;
+};
+
+/*
+* Checks whether the specified sequence contains
+* the same items in the same order as this sequence.
+*/
+Sequence.prototype.sameItems = function(collection) {
+   collection = asSequence(collection);
+   if (this.size() != collection.size()) return false;
+
+   for (var i = 0, length = this.items.length; i < length; i++) {
+      if (this.items[i] !== collection.items[i]) return false;
+   } 
+   return true;
+};
+
+
+var asSequence = function(instance) {
+   if (instance instanceof Seq) return instance;
+   if (isArray(instance)) return Seq(instance);
+   return null;
+};
+
+
+/*
+* ArraySeq is used internally as a temporary wrapper to augment 
+* an Array instance with Sequence methods. 
+*/
+var ArraySeq = createType('ArraySeq', Sequence);
+
+ArraySeq.prototype._init = function(items) {
+   this.items = items;
+};
+
+ArraySeq.fromArray = function(array) {
+   return array;
+};
+
+
+var Seq = Collection.Seq = Collection.Sequence = Sequence;
+
+/*
 * An ordered collection backed by an Array.
-* List inherits from all the Iterable methods.
+* List has access to all Sequence and Iterable methods.
 * List can be seen as a richer Array.
 */
-var List = createType('List', Iterable);
+var List = createType('List', Sequence);
 
 List.fromArray = function(array) {
 	return List.apply(null, array);
@@ -605,45 +678,6 @@ List.prototype.removeIf = function(predicate) {
 		}
 	}
 	return List.fromArray(removed);
-};
-
-/*
-* Returns the index of the first occurence of item in this list or -1 if none exists.
-*/
-List.prototype.indexOf = function(item, startingIndex) {
-	startingIndex = startingIndex || 0;
-   for (var i = startingIndex, length = this.items.length; i < length; i++) {
-   	if (this.items[i] === item) return i;
-   }
-	return -1;
-};
-
-/*
-* Returns the index of the last occurence of item in this list or -1 if none exists.
-*/
-List.prototype.lastIndexOf = function(item) {
-   for (var i = this.items.length - 1; i >= 0 ; i--) {
-   	if (this.items[i] === item) return i;
-   }
-	return -1;
-};
-
-/*
-* Tests whether this list contains the specified item.
-*/
-List.prototype.contains = function(item) {
-	return this.indexOf(item) != -1;
-};
-
-/*
-* Builds a new List without any duplicate items.
-*/
-List.prototype.distinct = function() {
-	var distinctItems = Set();
-	for (var i = 0, length = this.items.length; i < length; i++) {
-		distinctItems.add(this.items[i]);
-	}
-	return distinctItems.toList();
 };
 
 /*
@@ -1147,7 +1181,7 @@ ArrayMap.prototype.containsValue = function(value) {
 * as it's faster.
 */
 ArrayMap.prototype.keys = function() {
-   var keys = Iterable(this.items).map(function(entry) {
+   var keys = Seq(this.items).map(function(entry) {
       return entry.key;
    });
    return List.fromArray(keys);
@@ -1159,7 +1193,7 @@ ArrayMap.prototype.keys = function() {
 * as it's faster.
 */
 ArrayMap.prototype.values = function() {
-   var values = Iterable(this.items).map(function(entry) {
+   var values = Seq(this.items).map(function(entry) {
       return entry.value;
    });
    return List.fromArray(values);
@@ -1207,18 +1241,7 @@ ArrayMap.prototype._setMeta = function(entry) {
 };
 
 // Iterable overrides
-
-ArrayMap.prototype.contains = ArrayMap.prototype.containsKey;
-      
-ArrayMap.prototype.sameItems = function(otherIterable) {
-   if (this.size() != otherIterable.size()) return false;
-
-   for (var i = 0, length = this.items.length; i < length; i++) {
-      if (!this.items[i].equals(otherIterable.items[i])) return false;
-   }
-   return true;
-};
-
+  
 ArrayMap.prototype._invoke = function(func, forIndex, extraParam) {
    var entry = this.items[forIndex];
    return func(entry.key, entry.value, extraParam);
