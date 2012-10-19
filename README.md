@@ -123,7 +123,7 @@ Some data structure maintains a list of ids, another one has the objects themsel
 It's cumbersome and distracting for the reader.
 
 Another issue is that Objects have no Map API or state. Something as simple as getting the size of the map is an exercice on its own: Object.keys(map).length can only be used if shimmed.
-You have to use a low level loop over the keys to do pretty much any work, as Objects have no Map-like API beside []/. and delete.
+You have to use a low level loop over the keys to do pretty much any work, as Objects have no Map-like API beside `[]`, `.` and `delete`.
 
 Hence Map.
 
@@ -168,13 +168,13 @@ In this documentation, `Any` means any Javascript primitive, native or custom ob
 <a name="iterable-api"></a>
 ## Iterable
 
-Iterable is used internally as a trait for indexed collections.
+`Iterable` is used internally as a trait for indexed collections.
 You don't use Iterable directly.
-Whenever an Iterable method returns an Iterable, the type of the result will be the same as the original.
-None of the Iterable methods modify the original.
-For ArrayMap, some of the methods signatures are different; See [ArrayMap](#arraymap-api).
+Whenever an Iterable method returns an Iterable, its type will be the same as the original's.
+None of the Iterable methods mutate the original collection.
+For ArrayMap, some of the method signatures are different; See [ArrayMap](#arraymap-api).
 
-Iterables (Array, List and ArrayMap) have the following properties and methods:
+Iterables ([Array](#array-api), [List](#list-api) and [ArrayMap](#arraymap-api)) have the following properties and methods:
 
 ### items: Array
 The current Array representation of the collection. 
@@ -192,37 +192,363 @@ Returns the first item of this collection.
 ### last(): Any
 Returns the last item of this collection.
 
-### each(item -> void): void
+### each ((item, index: Number) -> void): void
 Applies a function to all items of this collection.
 
-### map(item -> Any): Iterable
+### map (item -> Any): Iterable
 Builds a new collection by applying a function to all items of this collection.
 
-...
+### extractProperty (property: String): List
+Builds a List of the extracted properties of this collection of objects.
+This is a special case of map(). The property can be arbitrarily nested.
+Example: `var postCodes = users.extractProperty('address.postCode')`
+
+### filter (item -> Boolean): Iterable
+Selects all items of this collection which satisfy a predicate.
+
+### count (item -> Boolean): Number
+Counts the number of items in this collection which satisfy a predicate.
+
+### find (item -> Boolean): Any
+Finds the first item of the collection satisfying a predicate, if any.
+
+### some (item -> Boolean): Boolean
+Tests whether a predicate holds for some of the items of this collection.
+
+### every (item -> Boolean): Boolean
+Tests whether a predicate holds for all items of this collection.
+
+### grouped (size: Number): List
+Partitions items in fixed size collections.
+
+### groupBy (item -> Any): Map[List]
+Partitions this collection into a map of Lists according to a discriminator function.
+
+### fold (initialValue, (item, currentValue) -> Any): Any
+Folds the items of this collection using the specified operator.
+fold is sometimes also called reduce.
+
+### partition (item -> Boolean): Array[Iterable]
+Partitions this collection in two collections according to a predicate.
+The first element of the returned Array contains the items that satisfied the predicate.
+
+### drop (n: Number): Iterable
+Selects all items except the first n ones.
+
+### dropRight (n: Number): Iterable
+Selects all items except the last n ones.
+
+### dropWhile (item -> Boolean): Iterable
+Drops items till the predicate no longer hold.
+
+### take (n: Number): Iterable
+Selects the first n items.
+
+### takeRight (n: Number): Iterable
+Selects the last n items.
+
+### takeWhile (item -> Boolean): Iterable
+Selects items till the predicate no longer hold.
+
+### reverse(): Iterable
+Returns a new collection with the items in reversed order.
+
+### slice (start: Number, end: Number): Iterable
+Selects an interval of items, starting from the `start` index and until, but not including `end`.
+
+### mkString (start: String, sep: String, end: String): String
+Displays all items of this collection as a string.
+
+### toList(): List
+Converts this collection to a List.
+
+### toArray(): Array
+Converts this collection to an Array.
+If you do not require a new Array instance, consider using the items property instead.
+
+### clone(): Iterable
+Creates a (shallow) copy of this collection.
+
 
 [Return to API](#api)
 
+
 <a name="sequence-api"></a>
 ## Sequence
+
+`Sequence` is used internally as a trait for iterable collections that are also sequences.
+Whenever a Sequence method returns a Sequence, its type will be the same as the original's.
+None of the Sequence methods mutate the original collection.
+Sequence (or Seq, an alias) can be used to wrap an Array instance: See [Array](#array-api)
+
+Sequences ([Array](#array-api) and [List](#list-api)) have the following properties and methods:
+
+### contains (item): Boolean
+Tests whether this sequence contains a given item.
+
+### distinct(): Sequence
+Builds a new sequence without any duplicate item.
+
+### flatten(): Sequence
+Converts this sequence of collections into a sequence formed by the items of these collections.
+
+### indexOf (item, startingIndex: Number): Number
+Returns the index of the first occurence of `item` in this sequence or -1 if none exists.
+
+### lastIndexOf (item): Number
+Returns the index of the last occurence of `item` in this sequence or -1 if none exists.
+
+### sameItems (that: Sequence): Boolean
+Checks whether the specified sequence contains the same items in the same order as this sequence.
+
+
+[Return to API](#api)
 
 
 <a name="array-api"></a>
 ## Array
 
+An Array instance can be temporarily augmented (A la underscore) with all methods from [Iterable](#iterable-api) and [Sequence](#sequence-api).
+The Iterable/Sequence API remains the same except that when an Iterable/Sequence would have been returned, an Array
+is returned instead. This makes chaining impossible.
+
+This can be useful as a one-off when using a List over an Array is not wanted.
+
+Examples:
+```javascript
+var people = [john, alice, robert];
+Seq(people).each(console.log);
+var seniors = Seq(people).count(function(person) {return person.age > 70});
+
+var oneTwoThree = Seq([1, 2, 3, 2, 1]).distinct();
+```
+
+
+[Return to API](#api)
+
 
 <a name="list-api"></a>
 ## List
+
+`List` is essentially a richer Array.
+
+```javascript
+var list = List(1, 2, 3);
+// or
+var list = new List(1, 2, 3);
+// or
+var list = List.fromArray([1, 2, 3]);
+```
+
+In addition to all [Iterable](#iterable-api) and [Sequence](#sequence-api) methods, List has the following mutating methods:
+
+### add (item): this
+Appends the item at the last position of this list.
+
+### addAt (item, index: Number): this
+Adds the item at a specific index.
+
+### update (index: Number, item): this
+Replaces the item at the given index with a new value.
+
+### insert (item, sortFunction): this
+Inserts an item in this sorted list using binary search according
+to the sortFunction that was used to sort the list
+or that matches the current item ordering.
+
+### remove (item): this
+Removes the item from this list.
+
+### removeAt (index: Number): Any
+Removes and returns the item located at the specified index.
+
+### removeFirst(): Any
+Removes the first item from this list.
+This is a mutating equivalent of Iterable's drop(1).
+
+### removeLast(): Any
+Removes the last item from this list.
+This is a mutating equivalent of Iterable's dropRight(1).
+
+### removeAll(): this
+Removes all items from this list.
+
+### removeIf (item -> Boolean): List
+Removes all items satisfying a predicate from this list.
+Returns the List of removed items.
+This is a mutating, (reversed) equivalent of Iterable's filter.
+
+### sort (sortFunction): this
+Sorts this list by using a sort function.
+The signature for the sort function is the same as for Arrays'.
+
+### sortBy (item -> Any): this
+Sorts this list by comparing the items transformed by an extractor function.
+The extractor function would typically return a property of each item or compute a value.
+
+### toSet(): Set
+Converts this list to a Set.
+
+
+[Return to API](#api)
 
 
 <a name="set-api"></a>
 ## Set
 
+`Set` is an unordered collection that does not allow duplicates.
+A set can hold any primitive or object.
+
+```javascript
+var set = Set(1, 2, 3);
+// or
+var set = new Set(1, 2, 3);
+// or
+var set = Set.fromArray([1, 2, 3]);
+
+function personEmail(person) {return person.email};
+var set = Set.withKey(personEmail, john, sarah, alice); // Enables user-defined equality instead of the default instance equality
+```
+
+Set methods:
+
+### add (item): Boolean
+Adds the item to this set if it is not already present.
+Returns true if the item was added, false if it was already in this set.
+
+### contains (item): Boolean
+Tests whether this set contains the specified item.
+
+### remove (item): Boolean
+Removes the item from this set.
+Returns true if the item was removed, false if the item was not in this set.
+
+### removeIf (item -> Boolean): this
+Removes all items satisfying a predicate.
+
+### removeAll(): this
+Removes all items from this set.
+
+### each (item -> void): void
+Applies a function to all items of this set.
+
+### size(): Number
+Returns the number of items in this set.
+
+### toList(): List
+Converts this set to a List.
+
+### toArray(): Array
+Converts this set to an Array.
+
+### clone(): Set
+Creates a copy of this set.
+
+
+[Return to API](#api)
+
 
 <a name="map-api"></a>
 ## Map
+
+`Map` is an unordered collection of key-value pairs.
+Any primitive or object can be used as a key or value.
+
+```javascript
+var map = Map(
+	1,   10,
+	2,   20,
+	3,   30
+);
+// or
+var map = Map();
+map.put(1, 10);
+map.put(2, 20);
+map.put(3, 30);
+// or
+function personEmail(person) {return person.email};
+var map = Map.withKey(personEmail, // Enables user-defined equality instead of the default instance equality
+	john,    40,
+	sarah, 	 50,
+	alice,	 37
+); 
+```
+
+Map methods:
+
+### put (key, value): Any
+Adds a value for the specified key.
+Returns the previous value mapped for this key, or undefined if the key is new.
+
+### remove (key): Any
+Removes and returns the value mapped to the specified key.
+
+### removeIf ((key, value) -> Boolean): this
+Removes all key-value mappings satisfying a predicate.
+
+### removeAll(): this
+Removes all key-value mappings from this map.
+
+### get (key): Any
+Returns the value associated with the specified key, or undefined.
+
+### containsKey (key): Boolean
+Tests whether this map contains a binding for this key.
+
+### containsValue (value): Boolean
+Tests whether this map contains this value at least once.
+
+### keys(): List
+Returns a List of all the keys of this map, in no particular order.
+
+### values(): List
+Returns a List of all the values of this map, in no particular order.
+
+### each ((key, value) -> void): void
+Applies a function to all key-value of this map.
+
+### size(): Number
+Returns the number of key-value pairs in this map.
+
+### toList(): List
+Converts this map to a List.
+
+### toArray(): Array
+Converts this map to an Array.
+
+### clone(): Map
+Creates a copy of this map.
+
+
+[Return to API](#api)
 
 
 <a name="arraymap-api"></a>
 ## ArrayMap
 
+`ArrayMap` is an indexed collection of key-value pairs. 
+The key-value pairs are stored in the order they were inserted.
+ArrayMap is used like a Map. Use it over a Map when the insertion order is important and/or when using the methods from Iterable is desirable.
 
+All methods from [Map](#map-api) and [Iterable](#iterable-api) are available with a few small differences:
+
+each() also gets the current key-value index:
+### each ((key, value, index: Number) -> void): void
+
+In general, any methods from Iterable that invoked a predicate or callback with the current item, now
+calls the function passing both the current key and value, e.g
+
+### filter ((key, value) -> Boolean): void
+
+
+map() is also different. Since mapping a Map can result in the key and/or the value changing,
+The result of each map() callback has to return either an Array of size 2 or an Object with key/value properties. 
+
+Example:
+```javascript
+var olderPeople = people.map(function(person, age) {return [person, age + 20]});
+// or
+var billyBobs = people.map(function(person, age) {return {key: 'billyBob', value: age});
+```
+
+[Return to API](#api)
