@@ -208,9 +208,7 @@ Entry.prototype._init = function(key, value) {
 
 Entry.prototype.key = null;
 Entry.prototype.value = null;
-Entry.prototype.equals = function(that) {
-   return ((this.key === that.key) && (this.value === that.value));   
-};
+
 Entry.prototype.toString = function() {
    return (this.key + ' -> ' + this.value);
 };
