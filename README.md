@@ -86,7 +86,8 @@ Support for AMD and other alternatives will likely be added at some point.
 Javascript is a tiny language used more and more to build big sites and apps. It's even used on the server sometimes. 
 To store your data, Javascript provides out of the box:
 
-* Array
+**Array**
+
 JS Arrays are quite decent; They're dynamic so you thankfully don't have to resize them yourself.
 I consider some of the Array's API old fashioned and clunky, e.g splice which takes two integers as its first arguments; 
 There is no remove() method which certainly would be used more often than splice().
@@ -99,11 +100,13 @@ Some other libraries modify the Array prototype with non standard methods; I'm u
 Hence List, a richer, different type from Array. Like in some high level languages, using List is often the preferred approach but Arrays can still be used.
 
 
-* Object used as... An object
+**Object used as... An object**
+
 Nothing wrong here.
 
 
-* Object used as a Map
+**Object used as a Map**
+
 Now it gets bad. You can represent associations using an Object:
 
 ```javascript
@@ -123,7 +126,8 @@ You have to use a low level loop over the keys to do pretty much any work, as Ob
 Hence Map.
 
 
-* Object used as a Set
+**Object used as a Set**
+
 All the issues mentionned for maps apply to sets, since an Object-based set is a map with fake truthy values:
 
 ```javascript
