@@ -6,6 +6,8 @@ Provides a small set of general purpose collections with implementations tailore
 * [Using the library in your code](#using-the-lib)
 * [Motivation](#motivation)
 * [Building collection-js](#building)
+* [API](#api)
+
 
 <a name="code-example"></a>
 # Code example
@@ -149,3 +151,78 @@ Hence Set.
 npm install uglify-js
 node build.js
 ```
+
+<a name="api"></a>
+# API
+
+* [Iterable](#iterable-api)
+* [Sequence](#sequence-api)
+* [Array](#array-api)
+* [List](#list-api)
+* [Set](#set-api)
+* [Map](#map-api)
+* [ArrayMap](#arraymap-api)
+
+In this documentation, `Any` means any Javascript primitive, native or custom object.
+
+<a name="iterable-api"></a>
+## Iterable
+
+Iterable is used internally as a trait for indexed collections.
+You don't use Iterable directly.
+Whenever an Iterable method returns an Iterable, the type of the result will be the same as the original.
+None of the Iterable methods modify the original.
+For ArrayMap, some of the methods signatures are different; See [ArrayMap](#arraymap-api).
+
+Iterables (Array, List and ArrayMap) have the following properties and methods:
+
+### items: Array
+The current Array representation of the collection. 
+It should be considered read-only and never modified directly.
+
+### size(): Number
+Returns the number of items in this collection.
+
+### isEmpty(): Boolean
+Indicates whether this collection is empty.
+
+### first(): Any
+Returns the first item of this collection.
+
+### last(): Any
+Returns the last item of this collection.
+
+### each(item -> void): void
+Applies a function to all items of this collection.
+
+### map(item -> Any): Iterable
+Builds a new collection by applying a function to all items of this collection.
+
+...
+
+[Return to API](#api)
+
+<a name="sequence-api"></a>
+## Sequence
+
+
+<a name="array-api"></a>
+## Array
+
+
+<a name="list-api"></a>
+## List
+
+
+<a name="set-api"></a>
+## Set
+
+
+<a name="map-api"></a>
+## Map
+
+
+<a name="arraymap-api"></a>
+## ArrayMap
+
+
