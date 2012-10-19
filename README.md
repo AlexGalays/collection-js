@@ -279,7 +279,7 @@ Creates a (shallow) copy of this collection.
 `Sequence` is used internally as a trait for iterable collections that are also sequences.
 Whenever a Sequence method returns a Sequence, its type will be the same as the original's.
 None of the Sequence methods mutate the original collection.
-Sequence (or Seq, an alias) can be used to wrap an Array instance: See [Array](#array-api)
+Sequence (or Seq, an alias) can be used to wrap an Array instance: See [Array](#array-api).
 
 Sequences ([Array](#array-api) and [List](#list-api)) have the following properties and methods:
 
@@ -405,9 +405,10 @@ var set = Set(1, 2, 3);
 var set = new Set(1, 2, 3);
 // or
 var set = Set.fromArray([1, 2, 3]);
-
+// or
 function personEmail(person) {return person.email};
-var set = Set.withKey(personEmail, john, sarah, alice); // Enables user-defined equality instead of the default instance equality
+// Enables user-defined equality instead of the default instance equality
+var set = Set.withKey(personEmail, john, sarah, alice);
 ```
 
 Set methods:
@@ -467,7 +468,8 @@ map.put(2, 20);
 map.put(3, 30);
 // or
 function personEmail(person) {return person.email};
-var map = Map.withKey(personEmail, // Enables user-defined equality instead of the default instance equality
+// Enables user-defined equality instead of the default instance equality
+var map = Map.withKey(personEmail, 
 	john,    40,
 	sarah, 	 50,
 	alice,	 37
