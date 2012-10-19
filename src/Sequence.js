@@ -7,7 +7,7 @@
 *
 * Sequence can also act as a temporary Array wrapper so that an Array instance
 * can beneficiate from all Sequence methods, e.g var otherArray = Seq(array).dropWhile(...);
-* This can be useful as a one-off when using a List over an Array is not justifiable.
+* This can be useful as a one-off when using a List over an Array is not wanted.
 */
 var Sequence = function(array) {
    if (this instanceof Sequence) return;

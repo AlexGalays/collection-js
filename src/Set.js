@@ -68,6 +68,7 @@ Set.prototype.remove = function(item) {
 */
 Set.prototype.removeIf = function(predicate) {
    this.map.removeIf(predicate);
+   return this;
 };
 
 /*
@@ -75,6 +76,7 @@ Set.prototype.removeIf = function(predicate) {
 */
 Set.prototype.removeAll = function() {
    this.map.removeAll();
+   return this;
 };
 
 /*

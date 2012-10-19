@@ -81,6 +81,7 @@ ArrayMap.prototype.removeIf = function(predicate) {
          i--;
       }
    }
+   return this;
 };
 
 /*
@@ -89,6 +90,7 @@ ArrayMap.prototype.removeIf = function(predicate) {
 ArrayMap.prototype.removeAll = function() {
    this._map.removeAll();
    this.items = [];
+   return this;
 };
 
 /*

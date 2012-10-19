@@ -175,6 +175,7 @@ Iterable.prototype.fold = function(initialValue, operator) {
 
 /*
 * Partitions this collection in two collections according to a predicate.
+* The first element of the returned Array contains the items that satisfied the predicate.
 */
 Iterable.prototype.partition = function(predicate) {
    var yes = [], no = [];
@@ -201,7 +202,7 @@ Iterable.prototype.dropRight = function(n) {
 };
 
 /*
-* Drops all items till the predicate no longer hold.
+* Drops items till the predicate no longer hold.
 */
 Iterable.prototype.dropWhile = function(predicate) {
    var result = this.items.slice();
@@ -230,7 +231,7 @@ Iterable.prototype.takeRight = function(n) {
 };
 
 /*
-* Selects all items till the predicate no longer hold.
+* Selects items till the predicate no longer hold.
 */
 Iterable.prototype.takeWhile = function(predicate) {
    var result = [];
@@ -251,8 +252,8 @@ Iterable.prototype.reverse = function() {
 /*
 * Selects an interval of items.
 */
-Iterable.prototype.slice = function(from, until) {
-   return this._createNew(this.items.slice(from, until));
+Iterable.prototype.slice = function(start, end) {
+   return this._createNew(this.items.slice(start, end));
 };
 
 /*
@@ -271,13 +272,14 @@ Iterable.prototype.toList = function() {
 
 /*
 * Converts this collection to an Array.
+* If you do not require a new Array instance, consider using the items property instead.
 */
 Iterable.prototype.toArray = function() {
    return cloneArray(this.items);
 };
 
 /*
-* Creates a copy of this collection.
+* Creates a (shallow) copy of this collection.
 */
 Iterable.prototype.clone = function() {
    return this._createNew(this.items.slice());

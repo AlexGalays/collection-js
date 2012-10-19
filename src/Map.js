@@ -89,6 +89,7 @@ Map.prototype.removeIf = function(predicate) {
          this._size--;
       }       
    }
+   return this;
 };
 
 /*
@@ -97,6 +98,7 @@ Map.prototype.removeIf = function(predicate) {
 Map.prototype.removeAll = function() {
    this.keyIdToEntry = {};
    this._size = 0;
+   return this;
 };
 
 /*

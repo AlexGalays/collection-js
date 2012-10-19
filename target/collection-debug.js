@@ -271,6 +271,7 @@ Iterable.prototype.fold = function(initialValue, operator) {
 
 /*
 * Partitions this collection in two collections according to a predicate.
+* The first element of the returned Array contains the items that satisfied the predicate.
 */
 Iterable.prototype.partition = function(predicate) {
    var yes = [], no = [];
@@ -297,7 +298,7 @@ Iterable.prototype.dropRight = function(n) {
 };
 
 /*
-* Drops all items till the predicate no longer hold.
+* Drops items till the predicate no longer hold.
 */
 Iterable.prototype.dropWhile = function(predicate) {
    var result = this.items.slice();
@@ -326,7 +327,7 @@ Iterable.prototype.takeRight = function(n) {
 };
 
 /*
-* Selects all items till the predicate no longer hold.
+* Selects items till the predicate no longer hold.
 */
 Iterable.prototype.takeWhile = function(predicate) {
    var result = [];
@@ -347,8 +348,8 @@ Iterable.prototype.reverse = function() {
 /*
 * Selects an interval of items.
 */
-Iterable.prototype.slice = function(from, until) {
-   return this._createNew(this.items.slice(from, until));
+Iterable.prototype.slice = function(start, end) {
+   return this._createNew(this.items.slice(start, end));
 };
 
 /*
@@ -367,13 +368,14 @@ Iterable.prototype.toList = function() {
 
 /*
 * Converts this collection to an Array.
+* If you do not require a new Array instance, consider using the items property instead.
 */
 Iterable.prototype.toArray = function() {
    return cloneArray(this.items);
 };
 
 /*
-* Creates a copy of this collection.
+* Creates a (shallow) copy of this collection.
 */
 Iterable.prototype.clone = function() {
    return this._createNew(this.items.slice());
@@ -442,7 +444,7 @@ Collection.Iterable = Iterable;
 *
 * Sequence can also act as a temporary Array wrapper so that an Array instance
 * can beneficiate from all Sequence methods, e.g var otherArray = Seq(array).dropWhile(...);
-* This can be useful as a one-off when using a List over an Array is not justifiable.
+* This can be useful as a one-off when using a List over an Array is not wanted.
 */
 var Sequence = function(array) {
    if (this instanceof Sequence) return;
@@ -812,6 +814,7 @@ Map.prototype.removeIf = function(predicate) {
          this._size--;
       }       
    }
+   return this;
 };
 
 /*
@@ -820,6 +823,7 @@ Map.prototype.removeIf = function(predicate) {
 Map.prototype.removeAll = function() {
    this.keyIdToEntry = {};
    this._size = 0;
+   return this;
 };
 
 /*
@@ -931,9 +935,7 @@ Entry.prototype._init = function(key, value) {
 
 Entry.prototype.key = null;
 Entry.prototype.value = null;
-Entry.prototype.equals = function(that) {
-   return ((this.key === that.key) && (this.value === that.value));   
-};
+
 Entry.prototype.toString = function() {
    return (this.key + ' -> ' + this.value);
 };
@@ -1010,6 +1012,7 @@ Set.prototype.remove = function(item) {
 */
 Set.prototype.removeIf = function(predicate) {
    this.map.removeIf(predicate);
+   return this;
 };
 
 /*
@@ -1017,6 +1020,7 @@ Set.prototype.removeIf = function(predicate) {
 */
 Set.prototype.removeAll = function() {
    this.map.removeAll();
+   return this;
 };
 
 /*
@@ -1144,6 +1148,7 @@ ArrayMap.prototype.removeIf = function(predicate) {
          i--;
       }
    }
+   return this;
 };
 
 /*
@@ -1152,6 +1157,7 @@ ArrayMap.prototype.removeIf = function(predicate) {
 ArrayMap.prototype.removeAll = function() {
    this._map.removeAll();
    this.items = [];
+   return this;
 };
 
 /*

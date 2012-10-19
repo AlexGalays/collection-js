@@ -47,7 +47,7 @@ List.prototype.update = function(index, item) {
 
 /*
 * Inserts an item in this sorted list using binary search according
-* to the same sortFunction that was used to sort the list
+* to the sortFunction that was used to sort the list
 * or that matches the current item ordering.
 */
 List.prototype.insert = function(item, sortFunction) {
@@ -84,7 +84,7 @@ List.prototype.removeAt = function(index) {
 
 /*
 * Removes the first item from this list.
-* This is the mutable version of Iterable's drop(1).
+* This is a mutating equivalent of Iterable's drop(1).
 */
 List.prototype.removeFirst = function() {
 	this._assertNotEmpty('removeFirst');
@@ -93,7 +93,7 @@ List.prototype.removeFirst = function() {
 
 /*
 * Removes the last item from this list.
-* This is the mutable version of Iterable's dropRight(1).
+* This is a mutating equivalent of Iterable's dropRight(1).
 */
 List.prototype.removeLast = function() {
 	this._assertNotEmpty('removeLast');
@@ -114,7 +114,7 @@ List.prototype.removeAll = function() {
 /*
 * Removes all items satisfying a predicate from this list.
 * Returns the List of removed items.
-* This is a mutable, reversed version of Iterable's filter.
+* This is a mutating, reversed equivalent of Iterable's filter.
 */
 List.prototype.removeIf = function(predicate) {
 	var removed = [];
