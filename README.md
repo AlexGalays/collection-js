@@ -83,11 +83,18 @@ console.log("All athletes: #{ athletes.values().flatten().distinct() }")
 <a name="using-the-lib"></a>
 # Using the library in your code
 
-At present, the library can only be imported as a script tag and creates a Collection namespace in the window object.
-Support for AMD and other alternatives will likely be added at some point.
+## As a script tag in the browser
+Use collection-debug or collection-release in a script tag. This creates a global Collection namespace.
+
+## In node.js
+collection-debug and collection-release can be used as node modules.
+
+## Using an AMD loader
+collection-amd-debug is an AMD compatible module.
 
 
 This library has no dependencies.
+
 
 <a name="motivation"></a>
 # Motivation

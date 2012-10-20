@@ -28,19 +28,25 @@ function uglify(srcPath, distPath) {
    console.log(' ' + distPath + ' built.');
 }
 
-concatFiles({
-   src: [
-      'src/start.js',
-      'src/util.js',
-      'src/Iterable.js',
-      'src/Sequence.js',
-      'src/List.js',
-      'src/Map.js',
-      'src/Set.js',
-      'src/ArrayMap.js',
-      'src/end.js',
-   ],
-   dest: 'target/collection-debug.js'
-});
+var libFiles = [
+   '../src/util.js',
+   '../src/Iterable.js',
+   '../src/Sequence.js',
+   '../src/List.js',
+   '../src/Map.js',
+   '../src/Set.js',
+   '../src/ArrayMap.js',
+];
 
-uglify('target/collection-debug.js', 'target/collection-release.js');
+// Browser global + Node build
+concatFiles({
+   src: ['header.js'].concat(libFiles).concat(['footer.js']),
+   dest: '../target/collection-debug.js'
+});
+uglify('../target/collection-debug.js', '../target/collection-release.js');
+
+// AMD build; No minification as it's usually done at a higher level.
+concatFiles({
+   src: ['header-amd.js'].concat(libFiles).concat(['footer-amd.js']),
+   dest: '../target/collection-amd-debug.js'
+});

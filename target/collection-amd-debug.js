@@ -1,4 +1,4 @@
-(function(){
+define(function() {
 
 var Collection = {};
 
@@ -1280,8 +1280,6 @@ ArrayMap.prototype._createNew = function(array) {
 Collection.ArrayMap = ArrayMap;
 
 
-var inNode = (module && module.exports);
+return Collection;
 
-inNode ? module.exports = Collection : this.Collection = Collection;
-
-})();
+});
