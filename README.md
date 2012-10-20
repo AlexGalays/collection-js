@@ -1,5 +1,9 @@
 # collection-js
 Provides a small set of general purpose collections with implementations tailored for Javascript.
+Some inspiration comes from [Scala](http://www.scala-lang.org/) and its rich object/functional hybrid approach which fits JS well and [spicefactory collections](https://github.com/spicefactory/Spicelib-Util/tree/master/src/main/org/spicefactory/lib/collection)
+for its simple ECMA collections.
+
+It should be compatible with any JS engine, even IE6's (Although it wasn't tested against it)
 
 # Content
 * [Code example](#code-example)
@@ -82,6 +86,8 @@ console.log("All athletes: #{ athletes.values().flatten().distinct() }")
 At present, the library can only be imported as a script tag and creates a Collection namespace in the window object.
 Support for AMD and other alternatives will likely be added at some point.
 
+
+This library has no dependencies.
 
 <a name="motivation"></a>
 # Motivation
@@ -556,3 +562,5 @@ var billyBobs = people.map(function(person, age) {return {key: 'billyBob', value
 ```
 
 [Return to API](#api)
+
+
