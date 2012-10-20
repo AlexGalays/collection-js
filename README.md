@@ -322,6 +322,10 @@ Returns the index of the last occurence of `item` in this sequence or -1 if none
 ### sameItems (that: Sequence): Boolean
 Checks whether the specified sequence contains the same items in the same order as this sequence.
 
+### removeItems (...items): Sequence
+Builds a new sequence where all ocurrences of the specified arguments have been removed.  
+Example: `var sanitized = sequence.removeItems(null, undefined);`
+
 
 [Return to API](#api)
 

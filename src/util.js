@@ -77,10 +77,10 @@ var keyArgs = function(keyFunction, args) {
    };
 };
 var getKeyFunction = function(args) {
-   return (args.length && args[0].isKeyArgs) ? args[0].keyFunction : getId; 
+   return (args.length && args[0] && args[0].isKeyArgs) ? args[0].keyFunction : getId; 
 };
 var getArgs = function(args) {
-   return (args.length && args[0].isKeyArgs) ? args[0].args : args; 
+   return (args.length && args[0] && args[0].isKeyArgs) ? args[0].args : args; 
 };
 
 var initPairs = function(map, pairs) {

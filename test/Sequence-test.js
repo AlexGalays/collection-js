@@ -52,6 +52,11 @@ var sequenceTests = {
       ok(mapped instanceof ArrayMap);
       equalEntryArray(mapped.items, 
          [[1, 10], [2, 20], [3, 30], [4, 40], [5, 50], [6, 60]]);
+   },
+
+   removeItems: function() {
+      var seq = this.seq._createNew([1, 2, null, 3, undefined, undefined, 4, null]);
+      deepEqual(seq.removeItems(null, undefined).items, [1, 2, 3, 4]);
    }
 };
 

@@ -78,6 +78,20 @@ Sequence.prototype.lastIndexOf = function(item) {
 };
 
 /*
+* Builds a new sequence where all ocurrences 
+* of the specified arguments have been removed.
+*/
+Sequence.prototype.removeItems = function() {
+   var blackList = Set.fromArray(arguments);
+   var result = [];
+   for (var i = 0, length = this.items.length; i < length; i++) {
+      var item = this.items[i];
+      if (!blackList.contains(item)) result.push(item);
+   }
+   return this._createNew(result);
+};
+
+/*
 * Checks whether the specified sequence contains
 * the same items in the same order as this sequence.
 */

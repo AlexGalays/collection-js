@@ -80,10 +80,10 @@ var keyArgs = function(keyFunction, args) {
    };
 };
 var getKeyFunction = function(args) {
-   return (args.length && args[0].isKeyArgs) ? args[0].keyFunction : getId; 
+   return (args.length && args[0] && args[0].isKeyArgs) ? args[0].keyFunction : getId; 
 };
 var getArgs = function(args) {
-   return (args.length && args[0].isKeyArgs) ? args[0].args : args; 
+   return (args.length && args[0] && args[0].isKeyArgs) ? args[0].args : args; 
 };
 
 var initPairs = function(map, pairs) {
@@ -155,7 +155,8 @@ Iterable.prototype.each = function(callback) {
 * Additionally, you can map a Seq to an ArrayMap by returning [key, value] tuples.
 * An ArrayMap can be mapped to a List by returning anything but 2-tuples.
 *
-* Note: If you intended to invoke filter and map in succession you can merge these operations into just map()
+* Note: If you intended to invoke filter and map in succession 
+* you can merge these operations into just one map() call
 * by returning Collection.NOT_MAPPED for the items that shouldn't be in the final collection.
 */
 Iterable.prototype.map = function(callback) {
@@ -534,6 +535,20 @@ Sequence.prototype.lastIndexOf = function(item) {
       if (this.items[i] === item) return i;
    }
    return -1;
+};
+
+/*
+* Builds a new sequence where all ocurrences 
+* of the specified arguments have been removed.
+*/
+Sequence.prototype.removeItems = function() {
+   var blackList = Set.fromArray(arguments);
+   var result = [];
+   for (var i = 0, length = this.items.length; i < length; i++) {
+      var item = this.items[i];
+      if (!blackList.contains(item)) result.push(item);
+   }
+   return this._createNew(result);
 };
 
 /*

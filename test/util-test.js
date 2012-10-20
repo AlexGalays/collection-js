@@ -25,6 +25,9 @@ test("getId - objects", function() {
 
    equal(getId(function(a) {return a;}), 'function-6');
 
+   // ids for null and undefined look a bit weird but we wouldn't want to slow down
+   // the id generation of everything else by adding null/undefined conditionals.
    equal(getId(null), 'object-null');
    equal(getId(null), 'object-null');
+   equal(getId(undefined), 'undefined-undefined');
 });
