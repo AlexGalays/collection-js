@@ -22,3 +22,13 @@ function sameArraysWithoutOrdering(arr1, arr2) {
    }
    return ok(true); 
 };
+
+var equalEntryArray = function(mapEntries, expectedEntries) {
+   for (var i = 0; i < expectedEntries.length; i++) {
+      var entry = mapEntries[i];
+      var expected = expectedEntries[i];
+      if (entry.key !== expected[0]) return fail('Expected key ' + expected[0] + ' but got ' + entry.key);
+      if (entry.value !== expected[1]) return fail('Expected value ' + expected[1] + ' but got ' + entry.value);
+   }
+   ok(true);
+};

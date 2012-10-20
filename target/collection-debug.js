@@ -150,6 +150,11 @@ Iterable.prototype.each = function(callback) {
 
 /*
 * Builds a new collection by applying a function to all items of this collection.
+*
+* ArrayMap will require that you return [key, value] tuples to create a new ArrayMap.
+* Additionally, you can map a Seq to an ArrayMap by returning [key, value] tuples.
+* An ArrayMap can be mapped to a List by returning anything but 2-tuples.
+*
 * Note: If you intended to invoke filter and map in succession you can merge these operations into just map()
 * by returning Collection.NOT_MAPPED for the items that shouldn't be in the final collection.
 */
@@ -159,7 +164,7 @@ Iterable.prototype.map = function(callback) {
       var mapped = this._invoke(callback, i);
       if (mapped != Collection.NOT_MAPPED) result.push(mapped);
    }
-   return this._createNew(result);
+   return this._createNewFromMapping(result);
 };
 
 Collection.NOT_MAPPED = {};
@@ -397,6 +402,18 @@ Iterable.prototype.toString = function() {
 */
 Iterable.prototype._createNew = function(array) {
    return this.constructor.fromArray(array);
+};
+
+/**
+* Creates a new Iterable from a mapping result.
+*/
+Iterable.prototype._createNewFromMapping = function(array) {
+   if ((this instanceof Seq) && isArrayOfTuples(array))
+      return ArrayMap.fromArray(array);
+   else if ((this instanceof ArrayMap) && array.length && !isArrayOfTuples(array))
+      return List.fromArray(array);
+   else
+      return this._createNew(array);
 };
 
 /**
@@ -946,6 +963,11 @@ Entry.prototype.toString = function() {
 };
 
 
+var isArrayOfTuples = function(array) {
+   return (array.length && isArray(array[0]) && array[0].length == 2);
+};
+
+
 Collection.Map = Map;
 
 /*
@@ -1086,6 +1108,15 @@ Collection.Set = Set;
 * The disadvantage is that key removals become O(log n) instead of O(1).
 */
 var ArrayMap = createType('ArrayMap', Iterable);
+
+/*
+* Creates a new Identity ArrayMap using the specified tuples Array.
+*/
+ArrayMap.fromArray = function(array) {
+   var map = ArrayMap();
+   addAll(map, array);
+   return map;
+};
 
 /*
 * Creates a new ArrayMap which uses a key function to determine whether
@@ -1260,20 +1291,22 @@ ArrayMap.prototype._invoke = function(func, forIndex, extraParam) {
 
 ArrayMap.prototype._createNew = function(array) {
    var map = ArrayMap.withKey(this._map.getId);
-   var usingEntries = (array.length && array[0].key && array[0].value);
+   addAll(map, array);
+   return map;
+};
 
-   if (usingEntries) {
-      for (var i = 0, length = array.length; i < length; i++) {
-         map.put(array[i].key, array[i].value);
-      }
-   }
-   else {
+
+var addAll = function(map, array) {
+   if (isArrayOfTuples(array)) {
       for (var i = 0, length = array.length; i < length; i++) {
          map.put(array[i][0], array[i][1]);
       }
    }
-
-   return map;
+   else {
+      for (var i = 0, length = array.length; i < length; i++) {
+         map.put(array[i].key, array[i].value);
+      }
+   }
 };
 
 

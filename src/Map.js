@@ -216,4 +216,9 @@ Entry.prototype.toString = function() {
 };
 
 
+var isArrayOfTuples = function(array) {
+   return (array.length && isArray(array[0]) && array[0].length == 2);
+};
+
+
 Collection.Map = Map;

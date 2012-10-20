@@ -49,6 +49,13 @@ var iterableTests = {
             : Collection.NOT_MAPPED;
       });
       deepEqual(mapped.items, [-2, -4, -6]);
+
+      // An empty mapping should maintain the original type
+      mapped = this.iterable.map(function(num) {
+         return Collection.NOT_MAPPED;
+      });
+      ok(mapped instanceof this.iterable.constructor);
+      deepEqual(mapped.items, []);
    },
 
    extractProperty: function() {

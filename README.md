@@ -211,8 +211,13 @@ Applies a function to all items of this collection.
 
 ### map (item -> Any): Iterable
 Builds a new collection by applying a function to all items of this collection.  
-Note: If you intended to invoke filter and map in succession you can merge these operations into just map()  
-by returning Collection.NOT_MAPPED for the items that shouldn't be in the final collection.
+ 
+ArrayMap will require that you return [key, value] tuples to create a new ArrayMap.  
+Additionally, you can map a Seq to an (Identity) ArrayMap by returning [key, value] tuples.  
+An ArrayMap can be mapped to a List by returning anything but 2-tuples.  
+
+Note: If you intended to invoke filter and map in succession you can merge these operations into just one map() call
+by returning Collection.NOT_MAPPED for the items that shouldn't be in the final collection. 
 
 ### extractProperty (property: String): List
 Builds a List of the extracted properties of this collection of objects.  
@@ -548,24 +553,17 @@ ArrayMap is used like a Map. Use it over a Map when the insertion order is impor
 
 All methods from [Map](#map-api) and [Iterable](#iterable-api) are available with a few small differences:
 
-each() also gets the current key-value index:
+each() also gets the current key-value index (You can skip that argument if you don't need it though):
 ### each ((key, value, index: Number) -> void): void
 
 In general, any methods from Iterable that invoked a predicate or callback with the current item, now
 calls the function passing both the current key and value, e.g
 
-### filter ((key, value) -> Boolean): void
+### filter ((key, value) -> Boolean): void  
 
+Internally, ArrayMap stores the items as {key: A, value: B} objects so this is the kind of object you're going
+to get when using methods such as first() or when you read the items property.
 
-map() is also different. Since mapping a Map can result in the key and/or the value changing,
-The result of each map() callback has to return either an Array of size 2 or an Object with key/value properties. 
-
-Example:
-```javascript
-var olderPeople = people.map(function(person, age) {return [person, age + 20]});
-// or
-var billyBobs = people.map(function(person, age) {return {key: 'billyBob', value: age});
-```
 
 [Return to API](#api)
 

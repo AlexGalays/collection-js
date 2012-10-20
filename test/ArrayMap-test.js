@@ -116,15 +116,32 @@ test('map', function() {
    });
    equalEntryArray(mapped.items, [[-1, 100], [-2, 200], [-3, 300]]);
 
-   var anotherMapped = this.numberMap.map(function(key, value) {
-      return {key: key * -1, value: value *10};
-   });
-   equalEntryArray(anotherMapped.items, [[-1, 100], [-2, 200], [-3, 300]]);
-
    mapped = this.numberMap.map(function(key, value) {
       return (key != 2) ? [key * -1, value] : Collection.NOT_MAPPED;
    });
    equalEntryArray(mapped.items, [[-1, 10], [-3, 30]]);
+
+   // Mapping an ArrayMap should result in a new ArrayMap with the same key equality behavior.
+   var keyName = function(key) {return key.name};
+   var objMap = ArrayMap.withKey(keyName, {name: 'A'}, 1, {name: 'B'}, 2);
+   mapped = objMap.map(function(key, value) {
+      return [{name: key.name + '_'}, value];
+   });
+   equal(mapped._map.getId, keyName);
+
+   // An empty mapping should maintain the ArrayMap type
+   mapped = this.numberMap.map(function(key, value) {
+      return Collection.NOT_MAPPED;
+   });
+   ok(mapped instanceof this.numberMap.constructor);
+   equalEntryArray(mapped.items, []);
+
+   // Mapping ArrayMap to the default Seq (List) by not returning tuples
+   mapped = this.numberMap.map(function(key, value) {
+      return value / 2;
+   });
+   ok(mapped instanceof List);
+   deepEqual(mapped.items, [5, 10, 15]);
 });
 
 test('extractProperty', function() {
@@ -275,14 +292,4 @@ test('toArray', function() {
 var equalEntry = function(entry1, entry2) {
    var equal = (entry1.key === entry2.key && entry1.value === entry2.value);
    ok(equal);
-};
-
-var equalEntryArray = function(mapEntries, expectedEntries) {
-   for (var i = 0; i < expectedEntries.length; i++) {
-      var entry = mapEntries[i];
-      var expected = expectedEntries[i];
-      if (entry.key !== expected[0]) return fail('Expected key ' + expected[0] + ' but got ' + entry.key);
-      if (entry.value !== expected[1]) return fail('Expected value ' + expected[1] + ' but got ' + entry.value);
-   }
-   ok(true);
 };

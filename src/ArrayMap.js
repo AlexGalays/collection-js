@@ -16,6 +16,15 @@
 var ArrayMap = createType('ArrayMap', Iterable);
 
 /*
+* Creates a new Identity ArrayMap using the specified tuples Array.
+*/
+ArrayMap.fromArray = function(array) {
+   var map = ArrayMap();
+   addAll(map, array);
+   return map;
+};
+
+/*
 * Creates a new ArrayMap which uses a key function to determine whether
 * it contains a binding for a key, as opposed to using reference equality.
 */
@@ -188,20 +197,22 @@ ArrayMap.prototype._invoke = function(func, forIndex, extraParam) {
 
 ArrayMap.prototype._createNew = function(array) {
    var map = ArrayMap.withKey(this._map.getId);
-   var usingEntries = (array.length && array[0].key && array[0].value);
+   addAll(map, array);
+   return map;
+};
 
-   if (usingEntries) {
-      for (var i = 0, length = array.length; i < length; i++) {
-         map.put(array[i].key, array[i].value);
-      }
-   }
-   else {
+
+var addAll = function(map, array) {
+   if (isArrayOfTuples(array)) {
       for (var i = 0, length = array.length; i < length; i++) {
          map.put(array[i][0], array[i][1]);
       }
    }
-
-   return map;
+   else {
+      for (var i = 0, length = array.length; i < length; i++) {
+         map.put(array[i].key, array[i].value);
+      }
+   }
 };
 
 
