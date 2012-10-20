@@ -1,8 +1,7 @@
 # collection-js
-Provides a small set of general purpose collections with implementations tailored for Javascript.
+Provides a small set of general purpose collections with implementations tailored for Javascript.  
 Some inspiration comes from [Scala](http://www.scala-lang.org/) and its rich object/functional hybrid approach which fits JS well and [spicefactory collections](https://github.com/spicefactory/Spicelib-Util/tree/master/src/main/org/spicefactory/lib/collection)
-for its simple ECMA collections.
-
+for its simple ECMA collections.  
 It should be compatible with any JS engine, even IE6's (Although it wasn't tested against it)
 
 # Content
@@ -83,15 +82,17 @@ console.log("All athletes: #{ athletes.values().flatten().distinct() }")
 <a name="using-the-lib"></a>
 # Using the library in your code
 
-## As a script tag in the browser
+**As a script tag in the browser**
+
 Use collection-debug or collection-release in a script tag. This creates a global Collection namespace.
 
-## In node.js
+**In node.js**
+
 collection-debug and collection-release can be used as node modules.
 
-## Using an AMD loader
-collection-amd-debug is an AMD compatible module.
+**Using an AMD loader**
 
+collection-amd-debug is an AMD compatible module.
 
 This library has no dependencies.
 
@@ -109,7 +110,7 @@ There is no remove() method which certainly would be used more often than splice
 Some of the API that was added over the years feel a bit more modern, like forEach although without shims they're not available in all browsers (forEach only since IE9).
 
 Some libraries like underscore take the approach of wrapping an Array instance in a function to augment it; 
-While augmenting with function wrapping can be an elegant pattern, I find the syntax for collections a bit ugly and repetitive, also chaining looks like a hack so people usually skip it.
+While augmenting with function wrapping can be an elegant pattern, I find the syntax for collections a bit ugly and repetitive, also chaining looks like a hack so people usually skip it.  
 Some other libraries modify the Array prototype with non standard methods; I'm usually against this when it's done from a third party library.
 
 Hence [List](#list-api), a richer, different type from Array. Like in some high level languages, using List is often the preferred approach but Arrays can still be used.
@@ -117,7 +118,7 @@ Hence [List](#list-api), a richer, different type from Array. Like in some high 
 
 **Object used as... An object**
 
-Nothing wrong here.
+Nothing wrong here.  
 
 
 **Object used as a Map**
@@ -181,16 +182,16 @@ In this documentation, `Any` means any Javascript primitive, native or custom ob
 <a name="iterable-api"></a>
 ## Iterable
 
-`Iterable` is used internally as a trait for indexed collections.
-You don't use Iterable directly.
-Whenever an Iterable method returns an Iterable, its type will be the same as the original's.
-None of the Iterable methods mutate the original collection.
-For ArrayMap, some of the method signatures are different; See [ArrayMap](#arraymap-api).
+Iterable is used internally as a trait for indexed collections.  
+You don't use Iterable directly.  
+Whenever an Iterable method returns an Iterable, its type will be the same as the original's.  
+None of the Iterable methods mutate the original collection.  
+For ArrayMap, some of the method signatures are different; See [ArrayMap](#arraymap-api).  
 
 Iterables ([Array](#array-api), [List](#list-api) and [ArrayMap](#arraymap-api)) have the following properties and methods:
 
 ### items: Array
-The current Array representation of the collection. 
+The current Array representation of the collection.  
 It should be considered read-only and never modified directly.
 
 ### size(): Number
@@ -209,13 +210,13 @@ Returns the last item of this collection.
 Applies a function to all items of this collection.
 
 ### map (item -> Any): Iterable
-Builds a new collection by applying a function to all items of this collection.
-Note: If you intended to invoke filter and map in succession you can merge these operations into just map()
+Builds a new collection by applying a function to all items of this collection.  
+Note: If you intended to invoke filter and map in succession you can merge these operations into just map()  
 by returning Collection.NOT_MAPPED for the items that shouldn't be in the final collection.
 
 ### extractProperty (property: String): List
-Builds a List of the extracted properties of this collection of objects.
-This is a special case of map(). The property can be arbitrarily nested.
+Builds a List of the extracted properties of this collection of objects.  
+This is a special case of map(). The property can be arbitrarily nested.  
 Example: `var postCodes = users.extractProperty('address.postCode')`
 
 ### filter (item -> Boolean): Iterable
@@ -240,11 +241,11 @@ Partitions items in fixed size collections.
 Partitions this collection into a map of Lists according to a discriminator function.
 
 ### fold (initialValue, (item, currentValue) -> Any): Any
-Folds the items of this collection using the specified operator.
+Folds the items of this collection using the specified operator.  
 fold is sometimes also called reduce.
 
 ### partition (item -> Boolean): Array[Iterable]
-Partitions this collection in two collections according to a predicate.
+Partitions this collection in two collections according to a predicate.  
 The first element of the returned Array contains the items that satisfied the predicate.
 
 ### drop (n: Number): Iterable
@@ -278,7 +279,7 @@ Displays all items of this collection as a string.
 Converts this collection to a List.
 
 ### toArray(): Array
-Converts this collection to an Array.
+Converts this collection to an Array.  
 If you do not require a new Array instance, consider using the items property instead.
 
 ### clone(): Iterable
@@ -291,9 +292,9 @@ Creates a (shallow) copy of this collection.
 <a name="sequence-api"></a>
 ## Sequence
 
-`Sequence` is used internally as a trait for iterable collections that are also sequences.
-Whenever a Sequence method returns a Sequence, its type will be the same as the original's.
-None of the Sequence methods mutate the original collection.
+Sequence is used internally as a trait for iterable collections that are also sequences.  
+Whenever a Sequence method returns a Sequence, its type will be the same as the original's.  
+None of the Sequence methods mutate the original collection.  
 Sequence (or Seq, an alias) can be used to wrap an Array instance: See [Array](#array-api).
 
 Sequences ([Array](#array-api) and [List](#list-api)) have the following properties and methods:
@@ -323,11 +324,10 @@ Checks whether the specified sequence contains the same items in the same order 
 <a name="array-api"></a>
 ## Array
 
-An Array instance can be temporarily augmented (A la underscore) with all methods from [Iterable](#iterable-api) and [Sequence](#sequence-api).
+An Array instance can be temporarily augmented (A la underscore) with all methods from [Iterable](#iterable-api) and [Sequence](#sequence-api).  
 The Iterable/Sequence API remains the same except that when an Iterable/Sequence would have been returned, an Array
-is returned instead. This makes chaining impossible.
-
-This can be useful as a one-off when using a List over an Array is not wanted.
+is returned instead. This makes chaining impossible.  
+Wrapping an Array can be useful as a one-off when using a List over an Array is not wanted.
 
 Examples:
 ```javascript
@@ -345,7 +345,7 @@ var oneTwoThree = Seq([1, 2, 3, 2, 1]).distinct();
 <a name="list-api"></a>
 ## List
 
-`List` is essentially a richer Array.
+List is essentially a richer Array.
 
 ```javascript
 var list = List(1, 2, 3);
@@ -367,9 +367,8 @@ Adds the item at a specific index.
 Replaces the item at the given index with a new value.
 
 ### insert (item, sortFunction): this
-Inserts an item in this sorted list using binary search according
-to the sortFunction that was used to sort the list
-or that matches the current item ordering.
+Inserts an item in this sorted list using binary search according to the sortFunction 
+that was used to sort the list or that matches the current item ordering.
 
 ### remove (item): this
 Removes the item from this list.
@@ -378,27 +377,27 @@ Removes the item from this list.
 Removes and returns the item located at the specified index.
 
 ### removeFirst(): Any
-Removes the first item from this list.
+Removes the first item from this list.  
 This is a mutating equivalent of Iterable's drop(1).
 
 ### removeLast(): Any
-Removes the last item from this list.
+Removes the last item from this list.  
 This is a mutating equivalent of Iterable's dropRight(1).
 
 ### removeAll(): this
 Removes all items from this list.
 
 ### removeIf (item -> Boolean): List
-Removes all items satisfying a predicate from this list.
-Returns the List of removed items.
+Removes all items satisfying a predicate from this list.  
+Returns the List of removed items.  
 This is a mutating, (reversed) equivalent of Iterable's filter.
 
 ### sort (sortFunction): this
-Sorts this list by using a sort function.
+Sorts this list by using a sort function.  
 The signature for the sort function is the same as for Arrays'.
 
 ### sortBy (item -> Any): this
-Sorts this list by comparing the items transformed by an extractor function.
+Sorts this list by comparing the items transformed by an extractor function.  
 The extractor function would typically return a property of each item or compute a value.
 
 ### toSet(): Set
@@ -411,7 +410,7 @@ Converts this list to a Set.
 <a name="set-api"></a>
 ## Set
 
-`Set` is an unordered collection that does not allow duplicates.
+Set is an unordered collection that does not allow duplicates.  
 A set can hold any primitive or object.
 
 ```javascript
@@ -429,14 +428,14 @@ var set = Set.withKey(personEmail, john, sarah, alice);
 Set methods:
 
 ### add (item): Boolean
-Adds the item to this set if it is not already present.
+Adds the item to this set if it is not already present.  
 Returns true if the item was added, false if it was already in this set.
 
 ### contains (item): Boolean
 Tests whether this set contains the specified item.
 
 ### remove (item): Boolean
-Removes the item from this set.
+Removes the item from this set.  
 Returns true if the item was removed, false if the item was not in this set.
 
 ### removeIf (item -> Boolean): this
@@ -467,7 +466,7 @@ Creates a copy of this set.
 <a name="map-api"></a>
 ## Map
 
-`Map` is an unordered collection of key-value pairs.
+Map is an unordered collection of key-value pairs.  
 Any primitive or object can be used as a key or value.
 
 ```javascript
@@ -494,7 +493,7 @@ var map = Map.withKey(personEmail,
 Map methods:
 
 ### put (key, value): Any
-Adds a value for the specified key.
+Adds a value for the specified key.  
 Returns the previous value mapped for this key, or undefined if the key is new.
 
 ### remove (key): Any
@@ -543,9 +542,9 @@ Creates a copy of this map.
 <a name="arraymap-api"></a>
 ## ArrayMap
 
-`ArrayMap` is an indexed collection of key-value pairs. 
-The key-value pairs are stored in the order they were inserted.
-ArrayMap is used like a Map. Use it over a Map when the insertion order is important and/or when using the methods from Iterable is desirable.
+ArrayMap is an indexed collection of key-value pairs.  
+The key-value pairs are stored in the order they were inserted.  
+ArrayMap is used like a Map. Use it over a Map when the insertion order is important and/or when using the methods from Iterable is desirable.  
 
 All methods from [Map](#map-api) and [Iterable](#iterable-api) are available with a few small differences:
 
