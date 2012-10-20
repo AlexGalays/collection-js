@@ -99,7 +99,7 @@ Some libraries like underscore take the approach of wrapping an Array instance i
 While augmenting with function wrapping can be an elegant pattern, I find the syntax for collections a bit ugly and repetitive, also chaining looks like a hack so people usually skip it.
 Some other libraries modify the Array prototype with non standard methods; I'm usually against this when it's done from a third party library.
 
-Hence List, a richer, different type from Array. Like in some high level languages, using List is often the preferred approach but Arrays can still be used.
+Hence [List](#list-api), a richer, different type from Array. Like in some high level languages, using List is often the preferred approach but Arrays can still be used.
 
 
 **Object used as... An object**
@@ -125,7 +125,7 @@ It's cumbersome and distracting for the reader.
 Another issue is that Objects have no Map API or state. Something as simple as getting the size of the map is an exercice on its own: Object.keys(map).length can only be used if shimmed.
 You have to use a low level loop over the keys to do pretty much any work, as Objects have no Map-like API beside `[]`, `.` and `delete`.
 
-Hence Map.
+Hence [Map](#map-api) and its ordered sister [ArrayMap](#arraymap-api).
 
 
 **Object used as a Set**
@@ -141,7 +141,7 @@ it's also pretty ugly and semantically weak compared to
 Set('key1', 'key2')
 ```
 
-Hence Set.
+Hence [Set](#set-api).
 
 
 <a name="building"></a>
@@ -197,6 +197,8 @@ Applies a function to all items of this collection.
 
 ### map (item -> Any): Iterable
 Builds a new collection by applying a function to all items of this collection.
+Note: If you intended to invoke filter and map in succession you can merge these operations into just map()
+by returning Collection.NOT_MAPPED for the items that shouldn't be in the final collection.
 
 ### extractProperty (property: String): List
 Builds a List of the extracted properties of this collection of objects.

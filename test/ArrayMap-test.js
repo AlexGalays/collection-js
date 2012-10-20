@@ -120,6 +120,11 @@ test('map', function() {
       return {key: key * -1, value: value *10};
    });
    equalEntryArray(anotherMapped.items, [[-1, 100], [-2, 200], [-3, 300]]);
+
+   mapped = this.numberMap.map(function(key, value) {
+      return (key != 2) ? [key * -1, value] : Collection.NOT_MAPPED;
+   });
+   equalEntryArray(mapped.items, [[-1, 10], [-3, 30]]);
 });
 
 test('extractProperty', function() {

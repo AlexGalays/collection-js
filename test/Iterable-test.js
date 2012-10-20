@@ -42,6 +42,13 @@ var iterableTests = {
       })());
 
       deepEqual(mapped.items, [1, 3, 6, 10, 15, 21]);
+
+      mapped = this.iterable.map(function(num) {
+         return (num % 2) == 0 
+            ? num * -1 
+            : Collection.NOT_MAPPED;
+      });
+      deepEqual(mapped.items, [-2, -4, -6]);
    },
 
    extractProperty: function() {

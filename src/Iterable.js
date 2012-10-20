@@ -54,14 +54,19 @@ Iterable.prototype.each = function(callback) {
 
 /*
 * Builds a new collection by applying a function to all items of this collection.
+* Note: If you intended to invoke filter and map in succession you can merge these operations into just map()
+* by returning Collection.NOT_MAPPED for the items that shouldn't be in the final collection.
 */
 Iterable.prototype.map = function(callback) {
    var result = [];
    for (var i = 0, length = this.items.length; i < length; i++) {
-      result.push(this._invoke(callback, i));
+      var mapped = this._invoke(callback, i);
+      if (mapped != Collection.NOT_MAPPED) result.push(mapped);
    }
    return this._createNew(result);
 };
+
+Collection.NOT_MAPPED = {};
 
 /*
 * Builds a List of the extracted properties of this collection of objects.
