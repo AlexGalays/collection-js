@@ -78,13 +78,13 @@ Collection.NOT_MAPPED = {};
 * Builds a List of the extracted properties of this collection of objects.
 * This is a special case of map(). The property can be arbitrarily nested.
 */
-Iterable.prototype.extractProperty = function(property) {
+Iterable.prototype.pluck = function(property) {
    var propertyChain = property.split('.');
-   var getProperty = getPropertyFunction(propertyChain);
+   var doPluck = getPluckFunction(propertyChain);
          
    var result = [];
    for (var i = 0, length = this.items.length; i < length; i++) {
-      result.push(getProperty(this.items[i], propertyChain));
+      result.push(doPluck(this.items[i], propertyChain));
    }
    return List.fromArray(result);
 }
@@ -342,7 +342,7 @@ Iterable.prototype._assertNotEmpty = function(methodName) {
 };
 
 
-var getPropertyFunction = function(propertyChain) {
+var getPluckFunction = function(propertyChain) {
    return (propertyChain.length == 1) ? getSimpleProperty : getNestedProperty; 
 };
 

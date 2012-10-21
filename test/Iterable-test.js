@@ -58,16 +58,16 @@ var iterableTests = {
       deepEqual(mapped.items, []);
    },
 
-   extractProperty: function() {
+   pluck: function() {
       var iterable = this.iterable._createNew([
          {name: 'coco', address: {code: 'SW4'}}, 
          {name: 'titi', address: {code: null}}, 
          {name: 'rose', address: {code: 'NW7'}}]);
 
-      var names = iterable.extractProperty('name');
+      var names = iterable.pluck('name');
       deepEqual(names.items, ['coco', 'titi', 'rose']);
 
-      var codes = iterable.extractProperty('address.code');
+      var codes = iterable.pluck('address.code');
       deepEqual(codes.items, ['SW4', null, 'NW7']);
    },
 

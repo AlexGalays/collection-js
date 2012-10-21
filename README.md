@@ -219,10 +219,10 @@ An ArrayMap can be mapped to a List by returning anything but 2-tuples.
 Note: If you intended to invoke filter and map in succession you can merge these operations into just one map() call
 by returning Collection.NOT_MAPPED for the items that shouldn't be in the final collection. 
 
-### extractProperty (property: String): List
+### pluck (property: String): List
 Builds a List of the extracted properties of this collection of objects.  
 This is a special case of map(). The property can be arbitrarily nested.  
-Example: `var postCodes = users.extractProperty('address.postCode')`
+Example: `var postCodes = users.pluck('address.postCode');`
 
 ### filter (item -> Boolean): Iterable
 Selects all items of this collection which satisfy a predicate.

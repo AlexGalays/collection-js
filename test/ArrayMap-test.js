@@ -144,19 +144,19 @@ test('map', function() {
    deepEqual(mapped.items, [5, 10, 15]);
 });
 
-test('extractProperty', function() {
+test('pluck', function() {
    var map = ArrayMap(
       1, {name: 'coco', address: {code: 'SW4'}},
       2, {name: 'titi', address: {code: null}},
       {keyName: 'roseKey'}, {name: 'rose', address: {code: 'NW7'}});
 
-   var names = map.extractProperty('value.name');
+   var names = map.pluck('value.name');
    deepEqual(names.items, ['coco', 'titi', 'rose']);
 
-   var codes = map.extractProperty('value.address.code');
+   var codes = map.pluck('value.address.code');
    deepEqual(codes.items, ['SW4', null, 'NW7']);
 
-   var keyNames = map.extractProperty('key.keyName');
+   var keyNames = map.pluck('key.keyName');
    deepEqual(keyNames.items, [undefined, undefined, 'roseKey']);
 });
 

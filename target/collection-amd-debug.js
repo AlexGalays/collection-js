@@ -188,13 +188,13 @@ Collection.NOT_MAPPED = {};
 * Builds a List of the extracted properties of this collection of objects.
 * This is a special case of map(). The property can be arbitrarily nested.
 */
-Iterable.prototype.extractProperty = function(property) {
+Iterable.prototype.pluck = function(property) {
    var propertyChain = property.split('.');
-   var getProperty = getPropertyFunction(propertyChain);
+   var doPluck = getPluckFunction(propertyChain);
          
    var result = [];
    for (var i = 0, length = this.items.length; i < length; i++) {
-      result.push(getProperty(this.items[i], propertyChain));
+      result.push(doPluck(this.items[i], propertyChain));
    }
    return List.fromArray(result);
 }
@@ -452,7 +452,7 @@ Iterable.prototype._assertNotEmpty = function(methodName) {
 };
 
 
-var getPropertyFunction = function(propertyChain) {
+var getPluckFunction = function(propertyChain) {
    return (propertyChain.length == 1) ? getSimpleProperty : getNestedProperty; 
 };
 
@@ -1041,10 +1041,8 @@ Set.withKey = function(keyFunction) {
 };
 
 Set.prototype.map = null;
-Set.prototype.self = null;
 
 Set.prototype._init = function() {
-   this.self = this;
    var keyFunction = getKeyFunction(arguments);
    var items = getArgs(arguments);
    this.map = Map.withKey(keyFunction);
@@ -1125,7 +1123,7 @@ Set.prototype.union = function(that) {
 * Returns a set consisting of the items that are both in this set and in the other set.
 */
 Set.prototype.intersect = function(that) {
-   var contains = bind(that.contains, that); // No prototypes next time!
+   var contains = bind(that.contains, that); // Never going to use prototypes again...
    return this._filter(contains);
 };
 
