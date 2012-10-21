@@ -490,6 +490,12 @@ map.put(1, 10);
 map.put(2, 20);
 map.put(3, 30);
 // or
+var map = Map( 
+	john,    40,
+	sarah, 	 50,
+	alice,	 37
+); 
+// or
 function personEmail(person) {return person.email};
 // Enables user-defined equality instead of the default instance equality
 var map = Map.withKey(personEmail, 
