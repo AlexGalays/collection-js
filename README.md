@@ -517,6 +517,19 @@ Removes all key-value mappings from this map.
 ### get (key): Any
 Returns the value associated with the specified key, or undefined.
 
+### getOrPut (key, defaultValue: Any): Any
+If the given key is already in this map, returns the associated value.  
+Otherwise, either use the provided value as is if it's not a function or the result from that function call.  
+The value is then associated with that key and returned.  
+Example:  
+```javascript
+var list = multiMap.getOrPut(key, List);
+list.add(...);
+
+var counter = counters.getOrPut(key, 0);
+counters.put(key, counter + 1);
+``` 
+
 ### containsKey (key): Boolean
 Tests whether this map contains a binding for this key.
 

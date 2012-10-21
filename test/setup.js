@@ -24,6 +24,7 @@ function sameArraysWithoutOrdering(arr1, arr2) {
 };
 
 var equalEntryArray = function(mapEntries, expectedEntries) {
+   if (mapEntries.length != expectedEntries.length) return fail('The sizes of entry arrays are different');
    for (var i = 0; i < expectedEntries.length; i++) {
       var entry = mapEntries[i];
       var expected = expectedEntries[i];

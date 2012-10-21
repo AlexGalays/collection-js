@@ -60,6 +60,31 @@ var mapTests = {
       ok(!map.containsKey(4));
    },
 
+   "getOrPut": function() {
+      var sarah = {name: 'sarah'};
+      var map = this.MapType(
+         1, sarah, 
+         sarah, 4, 
+         5, 6);
+      
+      equal(map.getOrPut(5, 50), 6);
+      equal(map.size(), 3);
+
+      equal(map.getOrPut(sarah, 50), 4);
+      equal(map.size(), 3);
+
+      equal(map.getOrPut(6, 50), 50);
+      equal(map.getOrPut(6, List), 50);
+      ok(map.getOrPut(7, List) instanceof List);
+      equal(map.getOrPut(8, function() {return 100}), 100);
+
+      this.sameArrays(map.keys().items, [1, sarah, 5, 6, 7, 8]);
+      equal(map.get(sarah), 4);
+      equal(map.get(6), 50);
+      ok(map.get(7) instanceof List);
+      equal(map.get(8), 100);
+   },
+
    "remove": function() {
       var sarah = {name: 'sarah'};
       var map = this.MapType(

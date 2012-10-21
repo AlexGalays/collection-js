@@ -110,6 +110,20 @@ Map.prototype.get = function(key) {
 };
 
 /*
+* If the given key is already in this map, returns the associated value.
+* Otherwise, either use the provided value as is if it's not a function or the result from that function call.
+* The value is then stored with that key and returned.
+*/
+Map.prototype.getOrPut = function(key, defaultValue) {
+   var currentValue = this.get(key);
+   if (currentValue !== undefined) return currentValue;
+
+   var value = isFunction(defaultValue) ? defaultValue() : defaultValue;
+   this.put(key, value);
+   return value;
+};
+
+/*
 * Tests whether this map contains a binding for this key.
 */
 Map.prototype.containsKey = function(key) {

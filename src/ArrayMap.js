@@ -16,7 +16,7 @@
 var ArrayMap = createType('ArrayMap', Iterable);
 
 /*
-* Creates a new Identity ArrayMap using the specified tuples Array.
+* Creates a new Identity ArrayMap using the specified tuple Array.
 */
 ArrayMap.fromArray = function(array) {
    var map = ArrayMap();
@@ -55,14 +55,9 @@ ArrayMap.prototype.put = function(key, value) {
    var previousValue = this._map.put(key, value);
    var entry = this._map.addedEntry;
 
-   if (previousValue === undefined) {
-      this.items.push(entry);
-      this._setMeta(entry);
-   }
-   else {
-      entry.value = value;
-   }
-
+   if (previousValue === undefined) this._addEntryItem(entry);
+   else entry.value = value;
+   
    return previousValue;
 };
 
@@ -72,10 +67,9 @@ ArrayMap.prototype.put = function(key, value) {
 ArrayMap.prototype.remove = function(key) {
    var value = this._map.remove(key);
 
-   if (value !== undefined) {
+   if (value !== undefined)
       this._removeEntryItem(this._map.removedEntry);
-   }
-
+   
    return value;
 };
 
@@ -107,6 +101,21 @@ ArrayMap.prototype.removeAll = function() {
 */
 ArrayMap.prototype.get = function(key) {
    return this._map.get(key);
+};
+
+/*
+* If the given key is already in this map, returns the associated value.
+* Otherwise, either use the provided value as is if it's not a function or the result from that function call.
+* The value is then associated with that key and returned.
+*/
+ArrayMap.prototype.getOrPut = function(key, defaultValue) {
+   var previousValue = this.get(key);
+   var newValue = this._map.getOrPut(key, defaultValue);
+
+   if (previousValue !== newValue)
+      this._addEntryItem(this._map.addedEntry);
+   
+   return newValue;
 };
 
 /*
@@ -145,6 +154,15 @@ ArrayMap.prototype.values = function() {
       return entry.value;
    });
    return List.fromArray(values);
+};
+
+
+/*
+* Adds the specified entry to the items Array.
+*/
+ArrayMap.prototype._addEntryItem = function(entry) {
+   this.items.push(entry);
+   this._setMeta(entry);
 };
 
 /*

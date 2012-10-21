@@ -1,6 +1,10 @@
 
 var noop = function() {};
 
+var isFunction = function(object) {
+   return (typeof object === 'function');
+};
+
 var isArray = function(instance) {
    return Object.prototype.toString.call(instance) === '[object Array]';
 };
