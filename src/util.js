@@ -1,6 +1,16 @@
 
 var noop = function() {};
 
+var bind = function(func, context) {
+   return function() {
+      return func.apply(context, arguments);
+   };
+}
+
+var not = function(func) {
+   return function() {return !func.apply(null, arguments)};
+};
+
 var isFunction = function(object) {
    return (typeof object === 'function');
 };

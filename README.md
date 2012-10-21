@@ -459,6 +459,18 @@ Applies a function to all items of this set.
 ### size(): Number
 Returns the number of items in this set.
 
+### union (that: Set): Set
+Computes the union between this set and another set.  
+Returns a set consisting of the items that are in this set or in the other set.
+
+### intersect (that: Set): Set
+Computes the intersection between this set and another set.  
+Returns a set consisting of the items that are both in this set and in the other set.
+
+### diff (that: Set): Set
+Computes the difference of this set and another set.  
+Returns a set containing the items of this set that are not also contained in the other set.
+
 ### toList(): List
 Converts this set to a List.
 

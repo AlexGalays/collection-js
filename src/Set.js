@@ -52,7 +52,7 @@ Set.prototype.add = function(item) {
 * Tests whether this set contains the specified item.
 */
 Set.prototype.contains = function(item) {
-   return (this.map.containsKey(item));
+   return this.map.containsKey(item);
 };
 
 /*
@@ -91,6 +91,43 @@ Set.prototype.each = function(callback) {
 */
 Set.prototype.size = function() {
    return this.map.size();
+};
+
+/*
+* Computes the union between this set and another set.
+* Returns a set consisting of the items that are in this set or in the other set.
+*/
+Set.prototype.union = function(that) {
+   var result = Set();
+   this.each(function(item) {result.add(item)});
+   that.each(function(item) {result.add(item)});
+   return result;
+};
+
+/*
+* Computes the intersection between this set and another set.
+* Returns a set consisting of the items that are both in this set and in the other set.
+*/
+Set.prototype.intersect = function(that) {
+   var contains = bind(that.contains, that); // Never going to use prototypes again...
+   return this._filter(contains);
+};
+
+/*
+* Computes the difference of this set and another set.
+* Returns a set containing the items of this set that are not also contained in the other set.
+*/  
+Set.prototype.diff = function(that) {
+   var contains = bind(that.contains, that);
+   return this._filter(not(contains));
+};
+
+Set.prototype._filter = function(predicate) {
+   var result = Set();
+   this.each(function(item) {
+      if (predicate(item)) result.add(item);
+   });
+   return result;
 };
 
 /*

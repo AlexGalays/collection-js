@@ -80,6 +80,27 @@ var setTests = {
       ok(seenItems.indexOf(1) != 3);
    },
 
+   "union": function() {
+      var set1 = this.SetType(1, 2, 3);
+      var set2 = this.SetType(1, 5, 4, 6, 3);
+      this.sameArrays(set1.union(set2).toArray(), [1, 2, 3, 5, 4, 6]);
+      this.sameArrays(set2.union(set1).toArray(), [1, 2, 3, 5, 4, 6]);
+   },
+
+   "intersect": function() {
+      var set1 = this.SetType(1, 2, 3);
+      var set2 = this.SetType(1, 5, 4, 6, 3);
+      this.sameArrays(set1.intersect(set2).toArray(), [1, 3]);
+      this.sameArrays(set2.intersect(set1).toArray(), [1, 3]);
+   },
+
+   "diff": function() {
+      var set1 = this.SetType(1, 2, 3);
+      var set2 = this.SetType(1, 5, 4, 6, 3);
+      this.sameArrays(set1.diff(set2).toArray(), [2]);
+      this.sameArrays(set2.diff(set1).toArray(), [5, 4, 6]);
+   },
+
    "toList": function() {
       var sarah = {name: 'sarah'};
       var set = this.SetType(1, sarah, 3);
