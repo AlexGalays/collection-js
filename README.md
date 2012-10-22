@@ -92,7 +92,12 @@ collection-debug and collection-release can be used as node modules.
 
 **Using an AMD loader**
 
-collection-amd-debug is an AMD compatible module.
+collection-amd-debug is an AMD compatible module.  
+The cleanest notation to use this library in your code using AMD is probably:  
+```javascript
+var Set = require("collection").Set;
+```
+
 
 This library has no dependencies.
 
