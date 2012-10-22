@@ -14,8 +14,6 @@ List.prototype._init = function() {
 	this.items = cloneArray(arguments);
 };
 
-List.prototype.items = null;
-
 /*
 * Appends the item at the last position of this list.
 */

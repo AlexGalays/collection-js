@@ -44,7 +44,6 @@ ArrayMap.prototype._init = function() {
 };
 
 ArrayMap.prototype._map = null;
-ArrayMap.prototype.items = null;
 
 /*
 * Adds a value for the specified key.

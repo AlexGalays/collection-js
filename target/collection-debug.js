@@ -128,6 +128,12 @@ var initPairs = function(map, pairs) {
 var Iterable = function() {};
 
 /*
+* The current Array representation of the collection.
+* It should be considered read-only and never modified directly.
+*/
+Iterable.prototype.items = null;
+
+/*
 * Returns the number of items in this collection. 
 */
 Iterable.prototype.size = function() {
@@ -622,8 +628,6 @@ List.fromArray = function(array) {
 List.prototype._init = function() {
 	this.items = cloneArray(arguments);
 };
-
-List.prototype.items = null;
 
 /*
 * Appends the item at the last position of this list.
@@ -1259,7 +1263,6 @@ ArrayMap.prototype._init = function() {
 };
 
 ArrayMap.prototype._map = null;
-ArrayMap.prototype.items = null;
 
 /*
 * Adds a value for the specified key.

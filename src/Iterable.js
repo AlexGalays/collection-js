@@ -14,6 +14,12 @@
 var Iterable = function() {};
 
 /*
+* The current Array representation of the collection.
+* It should be considered read-only and never modified directly.
+*/
+Iterable.prototype.items = null;
+
+/*
 * Returns the number of items in this collection. 
 */
 Iterable.prototype.size = function() {
