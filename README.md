@@ -613,7 +613,7 @@ You can also use the shortcut **range (n: Number)** which returns the list of th
 Example:  
 ```javascript
 var range = Collection.range;  
-range(10).each(alert); // will irritatingly alert 0, 2, 3, 4, 5, 6, 7, 8, 9  
+range(10).each(alert); // will irritatingly alert 0, 1, 2, 3, 4, 5, 6, 7, 8, 9  
 var someMultiplesOfFive = range(5, 20, 5); // List(5, 10, 15, 20)
 ```
 
