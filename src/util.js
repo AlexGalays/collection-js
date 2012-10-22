@@ -15,8 +15,12 @@ var isFunction = function(object) {
    return (typeof object === 'function');
 };
 
+var isNumber = function(object) {
+   return Object.prototype.toString.call(object) == '[object Number]';
+};
+
 var isArray = function(instance) {
-   return Object.prototype.toString.call(instance) === '[object Array]';
+   return Object.prototype.toString.call(instance) == '[object Array]';
 };
 
 var slice = Array.prototype.slice;

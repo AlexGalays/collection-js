@@ -176,6 +176,7 @@ node build.js
 * [Set](#set-api)
 * [Map](#map-api)
 * [ArrayMap](#arraymap-api)
+* [Utilities](#utilities-api)
 
 In this documentation, `Any` means any Javascript primitive, native or custom object.
 
@@ -602,4 +603,19 @@ to get when using methods such as first() or when you read the items property.
 
 [Return to API](#api)
 
+
+<a name="utilities-api"></a>
+## Utilities
+
+### range (start, stop, step): List[Number]
+Returns a list of integers from `start` to `stop` (inclusive), incremented or decremented by `step`.  
+You can also use the shortcut **range (n: Number)** which returns the list of the n first integers, starting from 0.
+Example:  
+```javascript
+var range = Collection.range;  
+range(10).each(alert); // will irritatingly alert 0, 2, 3, 4, 5, 6, 7, 8, 9  
+var someMultiplesOfFive = range(5, 20, 5); // List(5, 10, 15, 20)
+```
+
+[Return to API](#api)
 

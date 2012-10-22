@@ -6,6 +6,8 @@ List = Collection.List;
 Map = Collection.Map;
 Set = Collection.Set;
 ArrayMap = Collection.ArrayMap;
+range = Collection.range;
+
 
 function runTests(tests) {
    for (var name in tests) {

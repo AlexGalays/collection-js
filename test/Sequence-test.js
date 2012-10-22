@@ -5,6 +5,7 @@ var sequenceTests = {
       ok(this.seq.contains(4));
       ok(!this.seq.contains('4'));
       ok(!this.seq.contains(7)); 
+      ok(!this.seq.contains({}));
    },
 
    distinct: function() {

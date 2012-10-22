@@ -18,8 +18,12 @@ var isFunction = function(object) {
    return (typeof object === 'function');
 };
 
+var isNumber = function(object) {
+   return Object.prototype.toString.call(object) == '[object Number]';
+};
+
 var isArray = function(instance) {
-   return Object.prototype.toString.call(instance) === '[object Array]';
+   return Object.prototype.toString.call(instance) == '[object Array]';
 };
 
 var slice = Array.prototype.slice;
@@ -773,6 +777,43 @@ List.prototype._assertRange = function(index) {
 };
 
 
+/*
+* Returns a list of integers from start to stop (inclusive), 
+* incremented or decremented by step.
+*
+* You can also use the shortcut range(n) which returns the list 
+* of the n first integers, starting from 0.
+*/
+var range = function(start, stop, step) {
+   if (arguments.length == 1) {
+   	stop = arguments[0] - 1;
+   	start = 0;
+   }
+   step = step || 1;
+
+   var items = []; 
+   var next = start;
+   var increasing = (step > 0);
+
+   while ((increasing && next <= stop) || (!increasing && next >= stop)) {
+      items.push(next);
+      next = next + step;
+   }
+
+   var range = List.fromArray(items);
+
+   // Override Sequence's contains with a O(1) alternative
+   // when using 'continuous' int ranges.
+   if (step == 1)
+   	range.contains = function(item) {
+   		return isNumber(item) && item >= start && item <= stop;
+   	};
+
+   return range;
+};
+
+
+Collection.range = range;
 Collection.List = List;
 
 /*

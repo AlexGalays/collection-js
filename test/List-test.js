@@ -201,3 +201,49 @@ test("toString", function() {
 	var list = List(1, sarah, 3);
 	equal(list.toString(), 'List(1, sarah, 3)');
 });
+
+
+module("range", {
+   setup: function() {
+      this.seq = this.iterable = range(1, 6);   
+   }
+});
+
+runTests(iterableTests);
+runTests(sequenceTests);
+
+test("range without args", function() {
+   var emptyRange = range();
+   deepEqual(emptyRange.items, []);
+});
+
+test("range with just one arg", function() {
+   var r = range(5);
+   deepEqual(r.items, [0, 1, 2, 3, 4]);
+});
+
+test("Simple range without step", function() {
+	var r = range(1, 4);
+   deepEqual(r.items, [1, 2, 3, 4]);
+   ok(r.contains(1));
+   ok(r.contains(3));
+   ok(r.contains(4));
+   ok(!r.contains(0));
+   ok(!r.contains(5));
+});
+
+test("Simple range with step of 1", function() {
+   deepEqual(range(1, 4, 1).items, [1, 2, 3, 4]);
+});
+
+test("range with bigger step", function() {
+   deepEqual(range(0, 15, 5).items, [0, 5, 10, 15]);
+});
+
+test("range with bigger step - II", function() {
+   deepEqual(range(1, 15, 5).items, [1, 6, 11]);
+});
+
+test("range with negative step", function() {
+   deepEqual(range(2, -4, -1).items, [2, 1, 0, -1, -2, -3, -4]);
+});
