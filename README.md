@@ -13,7 +13,7 @@ You could join a custom build of lodash excluding 'arrays', 'chaining', 'collect
 * [Motivation](#motivation)
 * [Building collection-js](#building)
 * [API](#api)
-
+* [Extending collection-js](#extending)
 
 <a name="code-example"></a>
 # Code example
@@ -626,4 +626,58 @@ var someMultiplesOfFive = range(5, 20, 5); // List(5, 10, 15, 20)
 ```
 
 [Return to API](#api)
+
+
+<a name="extending"></a>
+## Extending collection-js
+
+collection-js aims to provide a few general purpose collections meeting common requirements.   
+It does not provide 37 implementation alternatives of almost the same thing nor collections meeting edge case requirements.
+
+You can add more collections as your app require them.  
+
+As an example, below is the code for an AMD module that adds a simplistic but fully functional MultiMap type to the collection module.  
+It uses require.js, the closure style (~9000 times better!) and just need to be loaded by your bootstrap/main.
+
+```javascript
+define(function(require) {
+
+
+var collection = require("lib/collection");
+var Map = collection.Map;
+var List = collection.List;
+
+
+var MultiMap = function() {
+   var map = Map();
+   var instance = {};
+
+   instance.put = function(key, value) {
+      var list = map.getOrPut(key, List);
+      list.add(value);
+   };
+
+   instance.get = function(key) {
+      return map.get(key);   
+   };
+
+   instance.remove = function(key, value) {
+      var list = map.get(key);
+      if (!list) return;
+         
+      if (value === undefined) list.removeFirst();
+      else list.remove(value);
+
+      if (list.isEmpty()) map.remove(key);
+   };
+
+   return instance;
+};
+
+collection.MultiMap = MultiMap;
+
+});
+```
+
+
 
