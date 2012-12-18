@@ -111,6 +111,22 @@ var iterableTests = {
       equal(result, undefined);
    },
 
+   findBy: function() {
+      var iterable = this.iterable._createNew([
+         {name: 'coco', address: {code: 'SW4'}}, 
+         {name: 'titi', address: {code: null}}, 
+         {name: 'rose', address: {code: 'NW7'}}]);
+
+      var maybeTiti = iterable.findBy('name', 'titi');
+      equal(maybeTiti, iterable.items[1]);
+
+      var maybeJohn = iterable.findBy('name', 'john');
+      equal(maybeJohn, undefined);
+
+      var nwPerson = iterable.findBy('address.code', 'NW7');
+      equal(nwPerson, iterable.items[2]);
+   },
+
    every: function() {
       var allNumbers = this.iterable.every(function(item) {return typeof item == 'number'});
       ok(allNumbers);

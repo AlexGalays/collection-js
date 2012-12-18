@@ -200,6 +200,25 @@ test('find', function() {
    equal(result, undefined);
 });
 
+test('findBy', function() {
+   var map = ArrayMap(
+      1, {name: 'coco', address: {code: 'SW4'}},
+      2, {name: 'titi', address: {code: null}},
+      {keyName: 'roseKey'}, {name: 'rose', address: {code: 'NW7'}});
+
+   var secondEntry = map.findBy('key', 2);
+   equal(secondEntry.value.name, 'titi');
+
+   var maybeTitiEntry = map.findBy('value.name', 'titi');
+   equal(maybeTitiEntry, map.items[1]);
+
+   var maybeJohnEntry = map.findBy('value.name', 'john');
+   equal(maybeJohnEntry, undefined);
+
+   var nwPersonEntry = map.findBy('value.address.code', 'NW7');
+   equal(nwPersonEntry, map.items[2]);
+});
+
 test('every', function() {
    var allNumbers = this.numberMap.every(function(key, value) {
       return typeof key == 'number' && typeof value == 'number';

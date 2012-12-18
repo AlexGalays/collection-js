@@ -242,6 +242,18 @@ Counts the number of items in this collection which satisfy a predicate.
 ### find (item -> Boolean): Any
 Finds the first item of the collection satisfying a predicate, if any.
 
+### findBy (property: String, value: Any): Any
+Finds the first item of this collection of objects that owns a property set to a given value.  
+This is a special case of find(). The property can be arbitrarily nested.  
+Example:  
+```javascript
+var users = List(...);
+var hacker = users.findBy('id', 1337);
+
+var people = ArrayMap(...);
+var homer = people.findBy('value.traits.color', 'yellow');
+``` 
+
 ### some (item -> Boolean): Boolean
 Tests whether a predicate holds for some of the items of this collection.
 

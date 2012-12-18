@@ -242,6 +242,19 @@ Iterable.prototype.find = function(predicate) {
 };
 
 /*
+* 
+*/
+Iterable.prototype.findBy = function(property, value) {
+   var propertyChain = property.split('.');
+   var doPluck = getPluckFunction(propertyChain);
+         
+   for (var i = 0, length = this.items.length; i < length; i++) {
+      if (doPluck(this.items[i], propertyChain) === value) return this.items[i];
+   }
+   return undefined;
+};
+
+/*
 * Tests whether a predicate holds for some of the items of this collection.
 */
 Iterable.prototype.some = function(predicate) {
