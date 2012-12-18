@@ -3,9 +3,7 @@ Provides a small set of general purpose collections with implementations tailore
 Some inspiration comes from [Scala](http://www.scala-lang.org/) and its rich object/functional hybrid approach which fits JS well.  
 It should be compatible with any JS engine, even IE6's (Although it wasn't tested against it thus far)  
 
-collection-js weights 16KB minified and focuses solely on collections.  
-You could join a custom build of lodash excluding 'arrays', 'chaining', 'collections' to get yourself a nice starting set of utilities.
-
+collection-js weights 16KB minified and focuses solely on collections.
 
 # Content
 * [Code example](#code-example)
