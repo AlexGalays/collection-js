@@ -40,13 +40,17 @@ var libFiles = [
 
 // Browser global + Node build
 concatFiles({
-   src: ['header.js'].concat(libFiles).concat(['footer.js']),
+   src: ['libraryName.js', 'header.js'].concat(libFiles).concat(['footer.js']),
    dest: '../target/collection-debug.js'
 });
 uglify('../target/collection-debug.js', '../target/collection-release.js');
+concatFiles({
+   src: ['libraryName.js', '../target/collection-release.js'],
+   dest: '../target/collection-release.js'
+});
 
 // AMD build; No minification as it's usually done at a higher level.
 concatFiles({
-   src: ['header-amd.js'].concat(libFiles).concat(['footer-amd.js']),
+   src: ['libraryName.js', 'header-amd.js'].concat(libFiles).concat(['footer-amd.js']),
    dest: '../target/collection-amd-debug.js'
 });

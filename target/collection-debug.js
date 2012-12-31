@@ -1,3 +1,4 @@
+// collection-js [NO VERSION]; Documentation: https://github.com/AlexGalays/collection-js
 (function(){
 
 var Collection = {};
