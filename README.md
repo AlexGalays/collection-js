@@ -219,9 +219,7 @@ Applies a function to all items of this collection.
 ### map (item -> Any): Iterable
 Builds a new collection by applying a function to all items of this collection.  
  
-ArrayMap will require that you return [key, value] tuples to create a new ArrayMap.  
-Additionally, you can map a Seq to an (Identity) ArrayMap by returning [key, value] tuples.  
-An ArrayMap can be mapped to a List by returning anything but 2-tuples.  
+ArrayMap will require that you return [key, value] tuples to create a new ArrayMap.    
 
 Note: If you intended to invoke filter and map in succession you can merge these operations into just one map() call
 by returning Collection.NOT_MAPPED for the items that shouldn't be in the final collection. 

@@ -135,13 +135,6 @@ test('map', function() {
    });
    ok(mapped instanceof this.numberMap.constructor);
    equalEntryArray(mapped.items, []);
-
-   // Mapping ArrayMap to the default Seq (List) by not returning tuples
-   mapped = this.numberMap.map(function(key, value) {
-      return value / 2;
-   });
-   ok(mapped instanceof List);
-   deepEqual(mapped.items, [5, 10, 15]);
 });
 
 test('pluck', function() {

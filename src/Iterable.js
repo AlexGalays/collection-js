@@ -62,8 +62,6 @@ Iterable.prototype.each = function(callback) {
 * Builds a new collection by applying a function to all items of this collection.
 *
 * ArrayMap will require that you return [key, value] tuples to create a new ArrayMap.
-* Additionally, you can map a Seq to an ArrayMap by returning [key, value] tuples.
-* An ArrayMap can be mapped to a List by returning anything but 2-tuples.
 *
 * Note: If you intended to invoke filter and map in succession 
 * you can merge these operations into just one map() call
@@ -75,7 +73,7 @@ Iterable.prototype.map = function(callback) {
       var mapped = this._invoke(callback, i);
       if (mapped != Collection.NOT_MAPPED) result.push(mapped);
    }
-   return this._createNewFromMapping(result);
+   return this._createNew(result);
 };
 
 Collection.NOT_MAPPED = {};
@@ -327,18 +325,6 @@ Iterable.prototype.toString = function() {
 */
 Iterable.prototype._createNew = function(array) {
    return this.constructor.fromArray(array);
-};
-
-/**
-* Creates a new Iterable from a mapping result.
-*/
-Iterable.prototype._createNewFromMapping = function(array) {
-   if ((this instanceof Seq) && isArrayOfTuples(array))
-      return ArrayMap.fromArray(array);
-   else if ((this instanceof ArrayMap) && array.length && !isArrayOfTuples(array))
-      return List.fromArray(array);
-   else
-      return this._createNew(array);
 };
 
 /**

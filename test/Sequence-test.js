@@ -45,16 +45,6 @@ var sequenceTests = {
       ok(this.seq.sameItems([1, 2, 3, 4, 5, 6]));
    },
 
-   map: function() {
-      // Mapping a Seq to ArrayMap by returning tuples
-      var mapped = this.seq.map(function(num) {
-         return [num, num * 10];
-      });
-      ok(mapped instanceof ArrayMap);
-      equalEntryArray(mapped.items, 
-         [[1, 10], [2, 20], [3, 30], [4, 40], [5, 50], [6, 60]]);
-   },
-
    removeItems: function() {
       var seq = this.seq._createNew([1, 2, null, 3, undefined, undefined, 4, null]);
       deepEqual(seq.removeItems(null, undefined).items, [1, 2, 3, 4]);
@@ -104,9 +94,4 @@ test("filter", function() {
 test("flatten", function() {
    var seq = Seq([1, [2, 3], Seq([4, 5]), 6, List(7, 8), 9]);
    deepEqual(seq.flatten(), [1, 2, 3, 4, 5, 6, 7, 8, 9]);
-});
-
-test("mapping to an ArrayMap", function() {
-   var mapped = this.seq.map(function(num) {return [num, num * 10]});
-   ok(mapped instanceof ArrayMap);
 });
