@@ -1,7 +1,7 @@
 
 
-var inNode = (module && module.exports);
+var commonJS = (typeof module !== 'undefined' && module.exports);
 
-inNode ? module.exports = Collection : this.Collection = Collection;
+commonJS ? module.exports = Collection : this.Collection = Collection;
 
 })();
