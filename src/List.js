@@ -194,9 +194,9 @@ var range = function(start, stop, step) {
    // Override Sequence's contains with a O(1) alternative
    // when using 'continuous' int ranges.
    if (step == 1)
-   	range.contains = function(item) {
-   		return isNumber(item) && item >= start && item <= stop;
-   	};
+       range.contains = function(item) {
+	       return isNumber(item) && item >= start && item <= stop;
+       };
 
    return range;
 };
