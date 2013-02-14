@@ -207,6 +207,9 @@ Returns the number of items in this collection.
 ### isEmpty(): Boolean
 Indicates whether this collection is empty.
 
+### itemAt(index: Number): Any
+Returns the item located at the specified index.
+
 ### first(): Any
 Returns the first item of this collection.
 

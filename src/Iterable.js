@@ -34,6 +34,13 @@ Iterable.prototype.isEmpty = function() {
 };
 
 /*
+* Returns the item located at the specified index.
+*/
+Iterable.prototype.itemAt = function(index) {
+   return this.items[index];
+};
+
+/*
 * Returns the first item of this collection.
 */
 Iterable.prototype.first = function() {

@@ -18,6 +18,12 @@ var iterableTests = {
       equal(empty.last(), undefined);
    },
 
+   itemAt: function() {
+      equal(this.iterable.itemAt(0), 1);
+      equal(this.iterable.itemAt(5), 6);
+      equal(this.iterable.itemAt(50), undefined);
+   },
+
    each: function() {
       var counter = 0;
       this.iterable.each(function(num) {counter++});
