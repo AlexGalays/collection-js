@@ -85,7 +85,6 @@ List.prototype.removeAt = function(index) {
 * This is a mutating equivalent of Iterable's drop(1).
 */
 List.prototype.removeFirst = function() {
-	this._assertNotEmpty('removeFirst');
 	return this.removeAt(0);
 };
 
@@ -94,7 +93,6 @@ List.prototype.removeFirst = function() {
 * This is a mutating equivalent of Iterable's dropRight(1).
 */
 List.prototype.removeLast = function() {
-	this._assertNotEmpty('removeLast');
 	return this.removeAt(this.items.length - 1);
 };
 

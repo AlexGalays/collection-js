@@ -1,4 +1,4 @@
-// collection-js [NO VERSION]; Documentation: https://github.com/AlexGalays/collection-js
+// collection-js 1.0 - Documentation: https://github.com/AlexGalays/collection-js
 (function(){
 
 var Collection = {};
@@ -152,7 +152,6 @@ Iterable.prototype.isEmpty = function() {
 * Returns the first item of this collection.
 */
 Iterable.prototype.first = function() {
-   this._assertNotEmpty('first');
    return this.items[0];
 };
 
@@ -160,7 +159,6 @@ Iterable.prototype.first = function() {
 * Returns the last item of this collection.
 */
 Iterable.prototype.last = function() {
-   this._assertNotEmpty('last');
    return this.items[this.items.length - 1];
 };
 
@@ -453,15 +451,6 @@ Iterable.prototype._invoke = function(func, forIndex, extraParam) {
    return func(this.items[forIndex], extraParam);
 };
 
-/**
-* Assertion used by methods that cannot produce a result when called on an empty collection.
-*/
-Iterable.prototype._assertNotEmpty = function(methodName) {
-   if (this.items.length == 0) {
-      throw new Error(methodName + '() cannot be called on an empty collection');
-   }
-};
-
 
 var getPluckFunction = function(propertyChain) {
    return (propertyChain.length == 1) ? getSimpleProperty : getNestedProperty; 
@@ -701,7 +690,6 @@ List.prototype.removeAt = function(index) {
 * This is a mutating equivalent of Iterable's drop(1).
 */
 List.prototype.removeFirst = function() {
-	this._assertNotEmpty('removeFirst');
 	return this.removeAt(0);
 };
 
@@ -710,7 +698,6 @@ List.prototype.removeFirst = function() {
 * This is a mutating equivalent of Iterable's dropRight(1).
 */
 List.prototype.removeLast = function() {
-	this._assertNotEmpty('removeLast');
 	return this.removeAt(this.items.length - 1);
 };
 
@@ -810,9 +797,9 @@ var range = function(start, stop, step) {
    // Override Sequence's contains with a O(1) alternative
    // when using 'continuous' int ranges.
    if (step == 1)
-   	range.contains = function(item) {
-   		return isNumber(item) && item >= start && item <= stop;
-   	};
+       range.contains = function(item) {
+	       return isNumber(item) && item >= start && item <= stop;
+       };
 
    return range;
 };

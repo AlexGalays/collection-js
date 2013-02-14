@@ -8,14 +8,14 @@ var iterableTests = {
       equal(this.iterable.first(), 1);
 
       var empty = this.iterable._createNew([]);
-      raises(function() {empty.first()}, 'first() on an empty list is illegal');
+      equal(empty.first(), undefined);
    },
 
    last: function() {
       equal(this.iterable.last(), 6);
 
       var empty = this.iterable._createNew([]);
-      raises(function() {empty.last()}, 'last() on an empty list is illegal');
+      equal(empty.last(), undefined);
    },
 
    each: function() {

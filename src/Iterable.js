@@ -37,7 +37,6 @@ Iterable.prototype.isEmpty = function() {
 * Returns the first item of this collection.
 */
 Iterable.prototype.first = function() {
-   this._assertNotEmpty('first');
    return this.items[0];
 };
 
@@ -45,7 +44,6 @@ Iterable.prototype.first = function() {
 * Returns the last item of this collection.
 */
 Iterable.prototype.last = function() {
-   this._assertNotEmpty('last');
    return this.items[this.items.length - 1];
 };
 
@@ -336,15 +334,6 @@ Iterable.prototype._createNew = function(array) {
 */
 Iterable.prototype._invoke = function(func, forIndex, extraParam) {
    return func(this.items[forIndex], extraParam);
-};
-
-/**
-* Assertion used by methods that cannot produce a result when called on an empty collection.
-*/
-Iterable.prototype._assertNotEmpty = function(methodName) {
-   if (this.items.length == 0) {
-      throw new Error(methodName + '() cannot be called on an empty collection');
-   }
 };
 
 
