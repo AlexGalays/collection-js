@@ -297,6 +297,36 @@ Returns a new collection with the items in reversed order.
 ### slice (start: Number, end: Number): Iterable
 Selects an interval of items, starting from the `start` index and until, but not including `end`.
 
+### sorted (options: Object): Iterable
+Returns a new sorted collection.
+The sort is stable.
+
+An option Object can be passed to modify the sort behavior.
+All options are compatible with each other.  
+The supported options are:  
+
+ignoreCase: Assuming strings are going to be sorted, ignore their cases. Defaults to false.  
+
+localCompare: Assuming strings are going to be sorted,  
+   handle locale-specific characters correctly at the cost of reduced sort speed. Defaults to false.  
+
+by: Assuming objects are being sorted, a String (See `pluck`) or Function either pointing to or computing the value   
+    that should be used for the sort. Defaults to null.  
+
+reverse: Reverse the sort. Defaults to false.  
+Example:  
+```javascript
+var numbers = [2, 3, 1];
+var sortedNumbers = Seq(numbers).sorted();
+
+var users = List(...);
+var sortedByEmail = users.sorted({by: 'info.email'});
+var sortedArbitrarily = users.sorted({by: function(person) { return info.email.slice(2, 6); }});
+
+var people = ArrayMap(...);
+var sortedPeople = people.sorted({by: 'info.email', ignoreCase: 1});
+``` 
+
 ### mkString (start: String, sep: String, end: String): String
 Displays all items of this collection as a string.
 
@@ -395,10 +425,6 @@ Adds the item at a specific index.
 ### update (index: Number, item): this
 Replaces the item at the given index with a new value.
 
-### insert (item, sortFunction): this
-Inserts an item in this sorted list using binary search according to the sortFunction 
-that was used to sort the list or that matches the current item ordering.
-
 ### remove (item): this
 Removes the item from this list.
 
@@ -420,14 +446,6 @@ Removes all items from this list.
 Removes all items satisfying a predicate from this list.  
 Returns the List of removed items.  
 This is a mutating, (reversed) equivalent of Iterable's filter.
-
-### sort (sortFunction): this
-Sorts this list by using a sort function.  
-The signature for the sort function is the same as for Arrays'.
-
-### sortBy (item -> Any): this
-Sorts this list by comparing the items transformed by an extractor function.  
-The extractor function would typically return a property of each item or compute a value.
 
 ### toSet(): Set
 Converts this list to a Set.
@@ -619,6 +637,13 @@ calls the function passing both the current key and value, e.g
 Internally, ArrayMap stores the items as {key: A, value: B} objects so this is the kind of object you're going
 to get when using methods such as first() or when you read the items property.
 
+In addition to all [Map](#map-api) and [Iterable](#iterable-api) methods, ArrayMap has the following methods:  
+
+### keySorted (options: Object): ArrayMap
+Same as Iterable's `sorted` but sort the map based on its keys.
+
+### valueSorted (options: Object): ArrayMap 
+This is an alias of Iterable's `sorted`.
 
 [Return to API](#api)
 
@@ -648,7 +673,7 @@ It does not provide 37 implementation alternatives of almost the same thing nor 
 You can add more collections as your app require them.  
 
 As an example, below is the code for an AMD module that adds a simplistic but fully functional MultiMap type to the collection module.  
-It uses require.js, the closure style (~9000 times better!) and just need to be loaded by your bootstrap/main.
+It uses require.js, the closure style and just need to be loaded by your bootstrap/main.
 
 ```javascript
 define(function(require) {

@@ -68,13 +68,18 @@ var iterableTests = {
       var iterable = this.iterable._createNew([
          {name: 'coco', address: {code: 'SW4'}}, 
          {name: 'titi', address: {code: null}}, 
-         {name: 'rose', address: {code: 'NW7'}}]);
+         {name: 'rose', address: {code: 'NW7'}},
+         {name: 'gypsyBoy', address: null},
+         {name: 'gypsyGirl'}]);
 
       var names = iterable.pluck('name');
-      deepEqual(names.items, ['coco', 'titi', 'rose']);
+      deepEqual(names.items, ['coco', 'titi', 'rose', 'gypsyBoy', 'gypsyGirl']);
+
+      var addresses = iterable.pluck('address');
+      deepEqual(addresses.takeRight(2).items, [null, undefined]);
 
       var codes = iterable.pluck('address.code');
-      deepEqual(codes.items, ['SW4', null, 'NW7']);
+      deepEqual(codes.items, ['SW4', null, 'NW7', undefined, undefined]);
    },
 
    filter: function() {
@@ -203,6 +208,54 @@ var iterableTests = {
    slice: function() {
       var result = this.iterable.slice(1, 4);
       deepEqual(result.items, [2, 3, 4]);  
+   },
+
+   sorted: function() {
+      var iterable, sorted;
+
+      // Numbers
+      iterable = this.iterable._createNew([5, 4, 1, 6, 2, 4, 3]);
+      sorted = iterable.sorted();
+      notEqual(sorted, iterable);
+      deepEqual(sorted.items, [1, 2, 3, 4, 4, 5, 6]);
+
+      // Default case sensitive String sort
+      iterable = this.iterable._createNew(['e', 'c', 'ca', 'A', 'F', 'd', 'b']);
+      sorted = iterable.sorted();
+      deepEqual(sorted.items, ['A', 'F', 'b', 'c', 'ca', 'd', 'e']);
+
+      // localeCompare
+      iterable = this.iterable._createNew("ä ba bb bä bz a e è é aa ae b ss sz sa st ß".split(" "));
+      sorted = iterable.sorted({localeCompare: 1});
+      equal(sorted.items.join(' '), 'a ä aa ae b ba bä bb bz e é è sa ss ß st sz');
+
+      // Ignore case
+      iterable = this.iterable._createNew(['e', 'c', 'ca', 'A', 'F', 'd', 'b']);
+      sorted = iterable.sorted({ignoreCase: 1});
+      deepEqual(sorted.items, ['A', 'b', 'c', 'ca', 'd', 'e', 'F']);
+
+      // Reverse
+      iterable = this.iterable._createNew(['e', 'c', 'ca', 'A', 'F', 'd', 'b']);
+      sorted = iterable.sorted({reverse: 1, ignoreCase: 1});
+      deepEqual(sorted.items, ['F', 'e', 'd', 'ca', 'c', 'b', 'A']);
+
+      // Falsy values (Except 0) should be in tail position
+      iterable = this.iterable._createNew(['e', 'c', '', undefined, 'ca', null, 'A', undefined, 'F', null, 'd', 'b']);
+      sorted = iterable.sorted();
+      deepEqual(sorted.items, ['A', 'F', 'b', 'c', 'ca', 'd', 'e', '', undefined, null, undefined, null]);
+
+      // By
+      iterable = this.iterable._createNew([
+         {name: 'Jesse', creationDate: 2},
+         {name: 'Walt', creationDate: 1},
+         {name: 'Mike', creationDate: 4},
+         {name: 'Skyler', creationDate: 3}
+      ]);
+      sorted = iterable.sorted({by: function(person) { return person.creationDate; }});
+      deepEqual(sorted.pluck('name').items, ['Walt', 'Jesse', 'Skyler', 'Mike']);
+
+      sorted = iterable.sorted({by: 'creationDate'});
+      deepEqual(sorted.pluck('name').items, ['Walt', 'Jesse', 'Skyler', 'Mike']);
    },
 
    mkString: function() {

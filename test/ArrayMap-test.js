@@ -289,6 +289,36 @@ test('slice', function() {
    equalEntryArray(result.items, [[2, 20], [3, 30]]);  
 });
 
+test('sorted', function() {
+   var sorted; 
+   var map = ArrayMap(
+      1, 40,
+      5, 50,
+      3, 10,
+      2, 20,
+      4, 30);
+
+   sorted = map.sorted();
+   equalEntryArray(sorted.items, [[3, 10], [2, 20], [4, 30], [1, 40], [5, 50]]);
+
+   sorted = map.valueSorted();
+   equalEntryArray(sorted.items, [[3, 10], [2, 20], [4, 30], [1, 40], [5, 50]]); 
+
+   sorted = map.keySorted();
+   equalEntryArray(sorted.items, [[1, 40], [2, 20], [3, 10], [4, 30], [5, 50]]); 
+
+   map = ArrayMap(
+      1,  {email: 'bbb@gmail.com'},
+      2,  {email: 'ccc@gmail.com'},
+      3,  {email: 'aaa@gmail.com'}
+   );
+   sorted = map.sorted({by: 'email'});
+   deepEqual(sorted.pluck('value.email').items, ['aaa@gmail.com', 'bbb@gmail.com', 'ccc@gmail.com']);
+
+   sorted = map.sorted({by: function(person) { return person.email; }});
+   deepEqual(sorted.pluck('value.email').items, ['aaa@gmail.com', 'bbb@gmail.com', 'ccc@gmail.com']);
+});
+
 test('mkString', function() {
    var str = this.numberMap.mkString('[', ', ', ']');
    equal(str, '[1 -> 10, 2 -> 20, 3 -> 30]');

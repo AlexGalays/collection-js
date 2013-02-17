@@ -155,6 +155,38 @@ ArrayMap.prototype.values = function() {
    return List.fromArray(values);
 };
 
+/*
+* Same as Iterable's sorted but sort the map based on its keys.
+*/
+ArrayMap.prototype.keySorted = function(options) {
+   return this._sortBy('key', options);
+};
+
+/*
+* Same as Iterable's sorted but sort the map based on its values.
+*/
+ArrayMap.prototype.valueSorted = ArrayMap.prototype.sorted = function(options) {
+   return this._sortBy('value', options);
+};
+
+ArrayMap.prototype._sortBy = function(field, options) {
+   options = (options && cloneObject(options)) || {};
+
+   if (!options.by) {
+      options.by = field;
+   }
+   else if (isString(options.by)) {
+      options.by = field + '.' + options.by;
+   }
+   else {
+      var by = options.by;
+      options.by = function(entry) {
+         return by(entry[field]);
+      }
+   }
+
+   return Iterable.prototype.sorted.call(this, options);
+};
 
 /*
 * Adds the specified entry to the items Array.

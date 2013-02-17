@@ -57,50 +57,6 @@ test("update", function() {
 	deepEqual(list.items, [1, 10, 3]);
 });
 
-test("insert - with default numeric sort", function() {
-	var list = List(1, 2, 3, 4, 5, 7, 8);
-
-	list.insert(6);
-	deepEqual(list.items, [1, 2, 3, 4, 5, 6, 7, 8]);
-
-	list.insert(6);
-	deepEqual(list.items, [1, 2, 3, 4, 5, 6, 6, 7, 8]);
-
-	list.insert(-50);
-	deepEqual(list.items, [-50, 1, 2, 3, 4, 5, 6, 6, 7, 8]);
-
-	list.insert(50);
-	deepEqual(list.items, [-50, 1, 2, 3, 4, 5, 6, 6, 7, 8, 50]);
-});
-
-test("insert - with default string sort", function() {
-	var list = List('A', 'B', 'C', 'D', 'a');
-
-	list.insert('G');
-	deepEqual(list.items, ['A', 'B', 'C', 'D', 'G', 'a']);
-
-	list.insert('E');
-	deepEqual(list.items, ['A', 'B', 'C', 'D', 'E', 'G', 'a']);
-
-	list.insert('d');
-	deepEqual(list.items, ['A', 'B', 'C', 'D', 'E', 'G', 'a', 'd']);
-});
-
-test("insert - with custom sort", function() {
-	var list = new List('A', 'B', 'C', 'D');
-	var caseInsensitiveSort = function(strA, strB) {
-		var a = strA.toUpperCase(), b = strB.toUpperCase();
-		return (a < b) ? -1 :
-				 (a > b) ? +1 : 0;
-	};
-
-	list.insert('a', caseInsensitiveSort);
-	deepEqual(list.items, ['a', 'A', 'B', 'C', 'D']);
-
-	list.insert('c', caseInsensitiveSort);
-	deepEqual(list.items, ['a', 'A', 'B', 'c', 'C', 'D']);
-});
-
 test("remove", function() {
 	var list = List(1, 2, 3);
 
@@ -153,31 +109,6 @@ test("removeAll", function() {
 	var list = List(1, 2, 3);
 	list.removeAll();
 	deepEqual(list.items, []);
-});
-
-test("sort", function() {
-	var array = [2, 5, 6, 1, 3, 4];
-	array.sort();
-	var list = List(2, 5, 6, 1, 3, 4);
-	list.sort();
-	deepEqual(list.items, array);
-
-	var reversedSort = function(a, b) {return b - a;};
-
-	array.sort(reversedSort);
-	list.sort(reversedSort);
-	deepEqual(list.items, array);
-});
-
-test("sortBy", function() {
-	var john = {name: 'john'};
-	var elton = {name: 'elton'};
-	var dick = {name: 'dick'};
-	var tracy = {name: 'tracy'};
-
-	var people = List(tracy, elton, dick, john);
-	people.sortBy(function(person) {return person.name});
-	deepEqual(people.items, [dick, elton, john, tracy]);
 });
 
 test("contains", function() {

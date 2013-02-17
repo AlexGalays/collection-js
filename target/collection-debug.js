@@ -20,17 +20,28 @@ var isFunction = function(object) {
 };
 
 var isNumber = function(object) {
-   return Object.prototype.toString.call(object) == '[object Number]';
+   return toString.call(object) == '[object Number]';
 };
 
 var isArray = function(instance) {
-   return Object.prototype.toString.call(instance) == '[object Array]';
+   return toString.call(instance) == '[object Array]';
 };
 
-var slice = Array.prototype.slice;
+var isString = function(instance) {
+   return toString.call(instance) == '[object String]';
+};
+
+var slice = Array.prototype.slice,
+    toString = Object.prototype.toString;
 
 var cloneArray = function(array) {
    return slice.apply(array);
+};
+
+var cloneObject = function(object) {
+   var clone = {};
+   for (var i in object) clone[i] = object[i];
+   return clone;
 };
 
 /**
@@ -149,6 +160,13 @@ Iterable.prototype.isEmpty = function() {
 };
 
 /*
+* Returns the item located at the specified index.
+*/
+Iterable.prototype.itemAt = function(index) {
+   return this.items[index];
+};
+
+/*
 * Returns the first item of this collection.
 */
 Iterable.prototype.first = function() {
@@ -196,12 +214,10 @@ Collection.NOT_MAPPED = {};
 * This is a special case of map(). The property can be arbitrarily nested.
 */
 Iterable.prototype.pluck = function(property) {
-   var propertyChain = property.split('.');
-   var doPluck = getPluckFunction(propertyChain);
-         
+   var doPluck = getPluckFunction(property);
    var result = [];
    for (var i = 0, length = this.items.length; i < length; i++) {
-      result.push(doPluck(this.items[i], propertyChain));
+      result.push(doPluck(this.items[i]));
    }
    return List.fromArray(result);
 }
@@ -243,11 +259,10 @@ Iterable.prototype.find = function(predicate) {
 * This is a special case of find(). The property can be arbitrarily nested.
 */
 Iterable.prototype.findBy = function(property, value) {
-   var propertyChain = property.split('.');
-   var doPluck = getPluckFunction(propertyChain);
+   var doPluck = getPluckFunction(property);
          
    for (var i = 0, length = this.items.length; i < length; i++) {
-      if (doPluck(this.items[i], propertyChain) === value) return this.items[i];
+      if (doPluck(this.items[i]) === value) return this.items[i];
    }
    return undefined;
 };
@@ -399,6 +414,90 @@ Iterable.prototype.slice = function(start, end) {
 };
 
 /*
+* Returns a new sorted collection.
+* The sort is stable.
+*
+* An option Object can be passed to modify the sort behavior.
+* All options are compatible with each other.
+* The supported options are:
+*
+* ignoreCase: Assuming strings are going to be sorted, ignore their cases. Defaults to false.
+*
+* localCompare: Assuming strings are going to be sorted,
+*   handle locale-specific characters correctly at the cost of reduced sort speed. Defaults to false.
+*
+* by: Assuming objects are being sorted, a String (See pluck) or Function either pointing to or computing the value 
+*   that should be used for the sort. Defaults to null.
+*
+* reverse: Reverse the sort. Defaults to false.
+*/
+Iterable.prototype.sorted = function(options) {
+   var o = options || {},
+       by = o.by !== undefined ? o.by : null,
+       localeCompare = o.localeCompare !== undefined ? o.localeCompare : false,
+       ignoreCase = o.ignoreCase !== undefined ? o.ignoreCase : false,
+       reverse = o.reverse !== undefined ? o.reverse : false,
+       result = [],
+       mapped = [],
+       missingData = [],
+       sortFunction,
+       item;
+
+   if (isString(by)) by = getPluckFunction(by);
+
+   for (var i = 0, length = this.items.length; i < length; i++) {
+      item = this.items[i];
+
+      if (by && item)
+         item = by(item);
+
+      if (item === null || item === undefined || item === '') {
+         missingData.push(item);
+         continue;
+      }
+
+      if (ignoreCase)
+         item = item.toUpperCase();
+
+      mapped.push({
+         index: i,
+         value: item
+      });
+   }
+
+   if (localeCompare) {
+      sortFunction = function(a, b) {
+         if (a.value !== b.value) {
+            return a.value.localeCompare(b.value);
+         }
+         return a.index < b.index ? -1 : 1;
+      };
+   }
+   else {
+      sortFunction = function(a, b) {
+         if (a.value !== b.value) {
+            return (a.value < b.value) ? -1 : 1;
+         }
+         return a.index < b.index ? -1 : 1;
+      };
+   }
+
+   mapped.sort(sortFunction);
+
+   for (var i = 0, length = mapped.length; i < length; i++) {
+      result.push(this.items[mapped[i].index]);
+   }
+
+   if (missingData.length) 
+      result = result.concat(missingData);
+
+   if (reverse) 
+      result.reverse();
+
+   return this._createNew(result);
+};
+
+/*
 * Displays all items of this collection as a string.
 */
 Iterable.prototype.mkString = function(start, sep, end) {
@@ -452,22 +551,22 @@ Iterable.prototype._invoke = function(func, forIndex, extraParam) {
 };
 
 
-var getPluckFunction = function(propertyChain) {
-   return (propertyChain.length == 1) ? getSimpleProperty : getNestedProperty; 
-};
-
-var getSimpleProperty = function(item, propertyChain) {
-   return item[propertyChain[0]];
-}
-
-var getNestedProperty = function(item, propertyChain) {
-   var i = 0, currentContext = item, length = propertyChain.length;
-   while (i < length) {
-     if (currentContext === undefined) return null;
-     currentContext = currentContext[propertyChain[i]];
-     i++;
-   }
-   return currentContext;
+var getPluckFunction = function(property) {
+   var propertyChain = property.split('.');
+   if (propertyChain.length == 1)
+      return function(item) {
+         return item[propertyChain[0]];
+      };
+   else
+      return function(item) {
+         var i = 0, currentContext = item, length = propertyChain.length;
+         while (i < length) {
+            if (currentContext == null && i != length) return undefined;
+            currentContext = currentContext[propertyChain[i]];
+            i++;
+         }
+         return currentContext;
+      };
 };
 
 
@@ -649,24 +748,6 @@ List.prototype.update = function(index, item) {
 };
 
 /*
-* Inserts an item in this sorted list using binary search according
-* to the sortFunction that was used to sort the list
-* or that matches the current item ordering.
-*/
-List.prototype.insert = function(item, sortFunction) {
-	sortFunction = sortFunction || this._defaultSortFunction;
-	var low = 0, high = this.size();
-	while (low < high) {
-   	var mid = (low + high) >> 1;
-      sortFunction(item, this.items[mid]) > 0 
-      	? low = mid + 1
-      	: high = mid;
-   }
-   this.addAt(item, low);
-   return this;
-};
-
-/*
 * Removes the item from this list.
 */
 List.prototype.remove = function(item) {
@@ -730,36 +811,10 @@ List.prototype.removeIf = function(predicate) {
 };
 
 /*
-* Sorts this list by using a sort function.
-* The signature for the sort function is the same as for Arrays'.
-*/
-List.prototype.sort = function(sortFunction) {
-	this.items.sort(sortFunction);
-	return this;
-};
-
-/*
-* Sorts this list by comparing the items transformed by an extractor function.
-* The extractor function would typically return a property of each item or compute a value.
-*/
-List.prototype.sortBy = function(extractor) {
-	var self = this;
-	this.items.sort(function(a, b) {
-		var A = extractor(a), B = extractor(b);
-		return (A < B) ? -1 : (A > B) ? +1 : 0;
-	});
-	return this;
-};
-
-/*
 * Converts this list to a Set.
 */
 List.prototype.toSet = function() {
 	return Set.fromArray(this.items);
-};
-
-List.prototype._defaultSortFunction = function(a, b) {
-	return (a < b) ? -1 : (a > b) ? 1 : 0;
 };
 
 List.prototype._assertRange = function(index) {
@@ -1362,6 +1417,38 @@ ArrayMap.prototype.values = function() {
    return List.fromArray(values);
 };
 
+/*
+* Same as Iterable's sorted but sort the map based on its keys.
+*/
+ArrayMap.prototype.keySorted = function(options) {
+   return this._sortBy('key', options);
+};
+
+/*
+* Same as Iterable's sorted but sort the map based on its values.
+*/
+ArrayMap.prototype.valueSorted = ArrayMap.prototype.sorted = function(options) {
+   return this._sortBy('value', options);
+};
+
+ArrayMap.prototype._sortBy = function(field, options) {
+   options = (options && cloneObject(options)) || {};
+
+   if (!options.by) {
+      options.by = field;
+   }
+   else if (isString(options.by)) {
+      options.by = field + '.' + options.by;
+   }
+   else {
+      var by = options.by;
+      options.by = function(entry) {
+         return by(entry[field]);
+      }
+   }
+
+   return Iterable.prototype.sorted.call(this, options);
+};
 
 /*
 * Adds the specified entry to the items Array.

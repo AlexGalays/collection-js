@@ -16,17 +16,28 @@ var isFunction = function(object) {
 };
 
 var isNumber = function(object) {
-   return Object.prototype.toString.call(object) == '[object Number]';
+   return toString.call(object) == '[object Number]';
 };
 
 var isArray = function(instance) {
-   return Object.prototype.toString.call(instance) == '[object Array]';
+   return toString.call(instance) == '[object Array]';
 };
 
-var slice = Array.prototype.slice;
+var isString = function(instance) {
+   return toString.call(instance) == '[object String]';
+};
+
+var slice = Array.prototype.slice,
+    toString = Object.prototype.toString;
 
 var cloneArray = function(array) {
    return slice.apply(array);
+};
+
+var cloneObject = function(object) {
+   var clone = {};
+   for (var i in object) clone[i] = object[i];
+   return clone;
 };
 
 /**

@@ -88,12 +88,10 @@ Collection.NOT_MAPPED = {};
 * This is a special case of map(). The property can be arbitrarily nested.
 */
 Iterable.prototype.pluck = function(property) {
-   var propertyChain = property.split('.');
-   var doPluck = getPluckFunction(propertyChain);
-         
+   var doPluck = getPluckFunction(property);
    var result = [];
    for (var i = 0, length = this.items.length; i < length; i++) {
-      result.push(doPluck(this.items[i], propertyChain));
+      result.push(doPluck(this.items[i]));
    }
    return List.fromArray(result);
 }
@@ -135,11 +133,10 @@ Iterable.prototype.find = function(predicate) {
 * This is a special case of find(). The property can be arbitrarily nested.
 */
 Iterable.prototype.findBy = function(property, value) {
-   var propertyChain = property.split('.');
-   var doPluck = getPluckFunction(propertyChain);
+   var doPluck = getPluckFunction(property);
          
    for (var i = 0, length = this.items.length; i < length; i++) {
-      if (doPluck(this.items[i], propertyChain) === value) return this.items[i];
+      if (doPluck(this.items[i]) === value) return this.items[i];
    }
    return undefined;
 };
@@ -291,6 +288,90 @@ Iterable.prototype.slice = function(start, end) {
 };
 
 /*
+* Returns a new sorted collection.
+* The sort is stable.
+*
+* An option Object can be passed to modify the sort behavior.
+* All options are compatible with each other.
+* The supported options are:
+*
+* ignoreCase: Assuming strings are going to be sorted, ignore their cases. Defaults to false.
+*
+* localCompare: Assuming strings are going to be sorted,
+*   handle locale-specific characters correctly at the cost of reduced sort speed. Defaults to false.
+*
+* by: Assuming objects are being sorted, a String (See pluck) or Function either pointing to or computing the value 
+*   that should be used for the sort. Defaults to null.
+*
+* reverse: Reverse the sort. Defaults to false.
+*/
+Iterable.prototype.sorted = function(options) {
+   var o = options || {},
+       by = o.by !== undefined ? o.by : null,
+       localeCompare = o.localeCompare !== undefined ? o.localeCompare : false,
+       ignoreCase = o.ignoreCase !== undefined ? o.ignoreCase : false,
+       reverse = o.reverse !== undefined ? o.reverse : false,
+       result = [],
+       mapped = [],
+       missingData = [],
+       sortFunction,
+       item;
+
+   if (isString(by)) by = getPluckFunction(by);
+
+   for (var i = 0, length = this.items.length; i < length; i++) {
+      item = this.items[i];
+
+      if (by && item)
+         item = by(item);
+
+      if (item === null || item === undefined || item === '') {
+         missingData.push(item);
+         continue;
+      }
+
+      if (ignoreCase)
+         item = item.toUpperCase();
+
+      mapped.push({
+         index: i,
+         value: item
+      });
+   }
+
+   if (localeCompare) {
+      sortFunction = function(a, b) {
+         if (a.value !== b.value) {
+            return a.value.localeCompare(b.value);
+         }
+         return a.index < b.index ? -1 : 1;
+      };
+   }
+   else {
+      sortFunction = function(a, b) {
+         if (a.value !== b.value) {
+            return (a.value < b.value) ? -1 : 1;
+         }
+         return a.index < b.index ? -1 : 1;
+      };
+   }
+
+   mapped.sort(sortFunction);
+
+   for (var i = 0, length = mapped.length; i < length; i++) {
+      result.push(this.items[mapped[i].index]);
+   }
+
+   if (missingData.length) 
+      result = result.concat(missingData);
+
+   if (reverse) 
+      result.reverse();
+
+   return this._createNew(result);
+};
+
+/*
 * Displays all items of this collection as a string.
 */
 Iterable.prototype.mkString = function(start, sep, end) {
@@ -344,22 +425,22 @@ Iterable.prototype._invoke = function(func, forIndex, extraParam) {
 };
 
 
-var getPluckFunction = function(propertyChain) {
-   return (propertyChain.length == 1) ? getSimpleProperty : getNestedProperty; 
-};
-
-var getSimpleProperty = function(item, propertyChain) {
-   return item[propertyChain[0]];
-}
-
-var getNestedProperty = function(item, propertyChain) {
-   var i = 0, currentContext = item, length = propertyChain.length;
-   while (i < length) {
-     if (currentContext === undefined) return null;
-     currentContext = currentContext[propertyChain[i]];
-     i++;
-   }
-   return currentContext;
+var getPluckFunction = function(property) {
+   var propertyChain = property.split('.');
+   if (propertyChain.length == 1)
+      return function(item) {
+         return item[propertyChain[0]];
+      };
+   else
+      return function(item) {
+         var i = 0, currentContext = item, length = propertyChain.length;
+         while (i < length) {
+            if (currentContext == null && i != length) return undefined;
+            currentContext = currentContext[propertyChain[i]];
+            i++;
+         }
+         return currentContext;
+      };
 };
 
 

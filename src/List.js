@@ -44,24 +44,6 @@ List.prototype.update = function(index, item) {
 };
 
 /*
-* Inserts an item in this sorted list using binary search according
-* to the sortFunction that was used to sort the list
-* or that matches the current item ordering.
-*/
-List.prototype.insert = function(item, sortFunction) {
-	sortFunction = sortFunction || this._defaultSortFunction;
-	var low = 0, high = this.size();
-	while (low < high) {
-   	var mid = (low + high) >> 1;
-      sortFunction(item, this.items[mid]) > 0 
-      	? low = mid + 1
-      	: high = mid;
-   }
-   this.addAt(item, low);
-   return this;
-};
-
-/*
 * Removes the item from this list.
 */
 List.prototype.remove = function(item) {
@@ -125,36 +107,10 @@ List.prototype.removeIf = function(predicate) {
 };
 
 /*
-* Sorts this list by using a sort function.
-* The signature for the sort function is the same as for Arrays'.
-*/
-List.prototype.sort = function(sortFunction) {
-	this.items.sort(sortFunction);
-	return this;
-};
-
-/*
-* Sorts this list by comparing the items transformed by an extractor function.
-* The extractor function would typically return a property of each item or compute a value.
-*/
-List.prototype.sortBy = function(extractor) {
-	var self = this;
-	this.items.sort(function(a, b) {
-		var A = extractor(a), B = extractor(b);
-		return (A < B) ? -1 : (A > B) ? +1 : 0;
-	});
-	return this;
-};
-
-/*
 * Converts this list to a Set.
 */
 List.prototype.toSet = function() {
 	return Set.fromArray(this.items);
-};
-
-List.prototype._defaultSortFunction = function(a, b) {
-	return (a < b) ? -1 : (a > b) ? 1 : 0;
 };
 
 List.prototype._assertRange = function(index) {
