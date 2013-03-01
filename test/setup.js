@@ -20,7 +20,7 @@ function fail(withMessage) {ok(false, withMessage)};
 function sameArraysWithoutOrdering(arr1, arr2) {
    if (arr1.length != arr2.length) return fail('The sizes of the arrays are different: ' + arr1.length + ' != ' + arr2.length);
    for (var i = 0; i < arr1.length; i++) {
-      if (arr2.indexOf(arr1[i]) == -1) return fail('arr2 does not contain this item from arr1: ' + arr1[i]);
+      if (indexOf(arr2, arr1[i]) == -1) return fail('arr2 does not contain this item from arr1: ' + arr1[i]);
    }
    return ok(true); 
 };
@@ -35,3 +35,10 @@ var equalEntryArray = function(mapEntries, expectedEntries) {
    }
    ok(true);
 };
+
+function indexOf(array, item) {
+   for (var i = 0, length = array.length; i < length; i++) {
+      if (array[i] === item) return i;
+   }
+   return -1;
+}

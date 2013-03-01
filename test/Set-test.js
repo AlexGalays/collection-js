@@ -75,9 +75,9 @@ var setTests = {
       set.each(remember);
 
       equal(seenItems.length, 3);
-      ok(seenItems.indexOf(1) != -1);
-      ok(seenItems.indexOf(1) != 4);
-      ok(seenItems.indexOf(1) != 3);
+      ok(indexOf(seenItems, 1) != -1);
+      ok(indexOf(seenItems, 1) != 4);
+      ok(indexOf(seenItems, 1) != 3);
    },
 
    "union": function() {
