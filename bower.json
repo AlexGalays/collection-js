@@ -1,0 +1,16 @@
+{
+  "name": "collection",
+  "version": "1.0.0",
+  "description": "General purpose collections tailored for Javascript",
+  "main": "target/collection-debug.js",
+  "keywords": ["collection", "list", "map", "set"],
+  "author": {
+    "name": "Alex Galays",
+    "email": "boubiyeah@hotmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:AlexGalays/collection-js.git"
+  },
+  "licenses": [{"type": "MIT"}]
+}
