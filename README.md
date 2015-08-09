@@ -1,3 +1,8 @@
+# Deprecated
+This library made the mistake of mixing mutable and immutable apis.
+
+If you need to work with plain Objects and Arrays in an immutable fashion, check [immupdate](https://github.com/AlexGalays/immupdate); If you want slower but richer immutable collections, check [immutable-js](https://github.com/facebook/immutable-js)
+
 # collection-js
 Provides a small set of general purpose collections with implementations tailored for Javascript.  
 Some inspiration comes from [Scala](http://www.scala-lang.org/) and its rich object/functional hybrid approach which fits JS well.  
