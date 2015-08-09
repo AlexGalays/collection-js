@@ -1,5 +1,5 @@
 # Deprecated
-This library made the mistake of mixing mutable and immutable apis.
+This library made the mistake of mixing mutable and immutable apis. I'm keeping it online as some of the code is interesting and worth using in object/array utils (e.g [sorted](https://github.com/AlexGalays/collection-js/blob/master/src/Iterable.js#L308))
 
 If you need to work with plain Objects and Arrays in an immutable fashion, check [immupdate](https://github.com/AlexGalays/immupdate); If you want slower but richer immutable collections, check [immutable-js](https://github.com/facebook/immutable-js)
 
